@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil - Vault G&D</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+    <script src="firebase-config.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #05071e 0%, #0a0f3d 50%, #1a237e 100%);
+            color: #f8f9fa;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        /* Efeito de partículas 3D */
+        
+        #particles-3d {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+        }
+        /* Header com efeito de vidro */
+        
+        .profile-header {
+            background: rgba(14, 17, 53, 0.7);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(38, 247, 254, 0.3);
+            padding: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.8rem;
+        }
+        
+        .vault-text {
+            color: #26f7fe;
+            text-shadow: 0 0 15px rgba(38, 247, 254, 0.7);
+        }
+        
+        .gold-ampersand {
+            background: linear-gradient(45deg, #a78344, #c9a66b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0 3px;
+            font-weight: bold;
+        }
+        
+        .gold-d {
+            background: linear-gradient(45deg, #a78344, #c9a66b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .back-btn {
+            background: rgba(38, 247, 254, 0.1);
+            color: #26f7fe;
+            border: 1px solid rgba(38, 247, 254, 0.3);
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .back-btn:hover {
+            background: rgba(38, 247, 254, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(38, 247, 254, 0.3);
+        }
+        /* Container principal */
+        
+        .profile-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 30px;
+        }
+        /* Sidebar de perfil */
+        
+        .profile-sidebar {
+            background: rgba(14, 17, 53, 0.8);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(38, 247, 254, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .profile-sidebar::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(to bottom right, rgba(38, 247, 254, 0.1), transparent, rgba(167, 131, 68, 0.1));
+            transform: rotate(30deg);
+            z-index: -1;
+            animation: shine 8s infinite linear;
+        }
+        
+        @keyframes shine {
+            0% {
+                transform: rotate(30deg) translate(-10%, -10%);
+            }
+            100% {
+                transform: rotate(30deg) translate(10%, 10%);
+            }
+        }
+        
+        .profile-pic {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            background: linear-gradient(45deg, #26f7fe, #a78344);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            border: 3px solid rgba(38, 247, 254, 0.5);
+            box-shadow: 0 0 30px rgba(38, 247, 254, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .profile-pic img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        
+        .profile-name {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+            background: linear-gradient(45deg, #26f7fe, #a78344);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .profile-email {
+            text-align: center;
+            color: #ccc;
+            margin-bottom: 30px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 25px 0;
+        }
+        
+        .stat {
+            text-align: center;
+            padding: 15px;
+            background: rgba(38, 247, 254, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(38, 247, 254, 0.2);
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #26f7fe, #a78344);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+        /* Conteúdo principal */
+        
+        .profile-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+        
+        .profile-card {
+            background: rgba(14, 17, 53, 0.8);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(38, 247, 254, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(38, 247, 254, 0.1), transparent);
+            transition: left 0.5s;
+        }
+        
+        .profile-card:hover::before {
+            left: 100%;
+        }
+        
+        .profile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(38, 247, 254, 0.3);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(45deg, #26f7fe, #a78344);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .card-title {
+            font-size: 1.3rem;
+            background: linear-gradient(45deg, #26f7fe, #a78344);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .card-content {
+            color: #ccc;
+            line-height: 1.6;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: rgba(38, 247, 254, 0.2);
+            color: #26f7fe;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin: 5px 5px 5px 0;
+            border: 1px solid rgba(38, 247, 254, 0.3);
+        }
+        
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .order-item:last-child {
+            border-bottom: none;
+        }
+        
+        .order-info h4 {
+            color: #26f7fe;
+            margin-bottom: 5px;
+        }
+        
+        .order-status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .status-delivered {
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+        }
+        
+        .status-pending {
+            background: rgba(241, 196, 15, 0.2);
+            color: #f1c40f;
+        }
+        
+        .status-processing {
+            background: rgba(52, 152, 219, 0.2);
+            color: #3498db;
+        }
+        
+        .wishlist-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .wishlist-item:last-child {
+            border-bottom: none;
+        }
+        
+        .wishlist-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            background: linear-gradient(45deg, #26f7fe, #a78344);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .wishlist-info {
+            flex: 1;
+        }
+        
+        .wishlist-info h4 {
+            color: #26f7fe;
+            margin-bottom: 5px;
+        }
+        
+        .wishlist-price {
+            color: #a78344;
+            font-weight: bold;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #26f7fe, #1a237e);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(38, 247, 254, 0.4);
+        }
+        /* Modal de Edição de Perfil */
+        
+        .edit-profile-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .edit-profile-modal.active {
+            display: flex;
+            opacity: 1;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: rgba(14, 17, 53, 0.95);
+            border-radius: 20px;
+            border: 1px solid rgba(38, 247, 254, 0.3);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        
+        .edit-profile-modal.active .modal-content {
+            transform: scale(1);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px;
+            border-bottom: 1px solid rgba(38, 247, 254, 0.2);
+        }
+        
+        .modal-header h2 {
+            background: linear-gradient(45deg, #26f7fe, #a78344);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.5rem;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            color: #26f7fe;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .close-modal:hover {
+            background: rgba(38, 247, 254, 0.1);
+            transform: rotate(90deg);
+        }
+        
+        .modal-body {
+            padding: 25px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #26f7fe;
+            font-weight: bold;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(38, 247, 254, 0.3);
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #26f7fe;
+            box-shadow: 0 0 10px rgba(38, 247, 254, 0.3);
+        }
+        
+        .form-input::placeholder {
+            color: #ccc;
+        }
+        /* Upload de Foto */
+        
+        .profile-pic-upload {
+            text-align: center;
+        }
+        
+        .current-pic {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            background: linear-gradient(45deg, #26f7fe, #a78344);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            border: 3px solid rgba(38, 247, 254, 0.5);
+            overflow: hidden;
+        }
+        
+        .current-pic img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .upload-btn {
+            display: inline-block;
+            background: rgba(38, 247, 254, 0.1);
+            color: #26f7fe;
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: 1px solid rgba(38, 247, 254, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+        
+        .upload-btn:hover {
+            background: rgba(38, 247, 254, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .image-preview {
+            margin-top: 10px;
+        }
+        
+        .image-preview img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #26f7fe;
+            display: none;
+        }
+        /* Botões do formulário */
+        
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .btn-cancel,
+        .btn-save {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-cancel {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ccc;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .btn-save {
+            background: linear-gradient(45deg, #26f7fe, #1a237e);
+            color: white;
+        }
+        
+        .btn-save:hover {
+            background: linear-gradient(45deg, #1a8f9e, #26f7fe);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(38, 247, 254, 0.4);
+        }
+        /* Notificação */
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(46, 204, 113, 0.9);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1001;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.error {
+            background: rgba(231, 76, 60, 0.9);
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, .3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        /* Responsividade */
+        
+        @media (max-width: 968px) {
+            .profile-container {
+                grid-template-columns: 1fr;
+            }
+            .profile-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .stats {
+                grid-template-columns: 1fr;
+            }
+            .modal-content {
+                width: 95%;
+                margin: 20px;
+            }
+            .form-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Efeito de partículas 3D -->
+    <div id="particles-3d"></div>
+
+    <!-- Header -->
+    <header class="profile-header">
+        <div class="header-content">
+            <a href="index.html" class="logo">
+                <span class="vault-text">Vault</span>
+                <span class="gold-d">G</span>
+                <span class="gold-ampersand">&</span>
+                <span class="gold-d">D</span>
+            </a>
+
+            <a href="index.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Voltar para Loja
+            </a>
+        </div>
+    </header>
+
+    <!-- Container principal -->
+    <div class="profile-container">
+        <!-- Sidebar do perfil -->
+        <div class="profile-sidebar">
+            <div class="profile-pic" id="profilePic">
+                <!-- Imagem será carregada via JavaScript -->
+            </div>
+            <h2 class="profile-name" id="profileName">Carregando...</h2>
+            <p class="profile-email" id="profileEmail">carregando...</p>
+
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value" id="ordersCount">0</div>
+                    <div class="stat-label">Pedidos</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="wishlistCount">0</div>
+                    <div class="stat-label">Favoritos</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="memberSince">2024</div>
+                    <div class="stat-label">Membro desde</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="completionRate">75%</div>
+                    <div class="stat-label">Perfil</div>
+                </div>
+            </div>
+
+            <button class="btn-primary" style="width: 100%; margin-top: 20px;" id="editProfileBtn">
+                <i class="fas fa-edit"></i> Editar Perfil
+            </button>
+        </div>
+
+        <!-- Conteúdo do perfil -->
+        <div class="profile-content">
+            <!-- Card de informações pessoais -->
+            <div class="profile-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <h3 class="card-title">Informações Pessoais</h3>
+                </div>
+                <div class="card-content">
+                    <p><strong>Nome:</strong> <span id="infoName">Carregando...</span></p>
+                    <p><strong>Email:</strong> <span id="infoEmail">carregando...</span></p>
+                    <p><strong>Telefone:</strong> <span id="infoPhone">Não informado</span></p>
+                    <p><strong>Membro desde:</strong> <span id="infoMemberSince">Janeiro 2024</span></p>
+                    <p><strong>Status:</strong> <span class="badge" id="infoStatus">Ativo</span></p>
+                    <p><strong>Preferências:</strong> <span id="infoPreferences">Moda casual e esportiva</span></p>
+                    <p><strong>Biografia:</strong> <span id="infoBio">Nenhuma biografia adicionada.</span></p>
+                </div>
+            </div>
+
+            <!-- Card de pedidos recentes -->
+            <div class="profile-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-shopping-bag"></i>
+                    </div>
+                    <h3 class="card-title">Pedidos Recentes</h3>
+                </div>
+                <div class="card-content" id="recentOrders">
+                    <div class="order-item">
+                        <div class="order-info">
+                            <h4>Moletom Premium</h4>
+                            <small>Pedido #VD1254 - R$ 129,90</small>
+                        </div>
+                        <span class="order-status status-delivered">Entregue</span>
+                    </div>
+                    <div class="order-item">
+                        <div class="order-info">
+                            <h4>Tênis Esportivo</h4>
+                            <small>Pedido #VD1253 - R$ 199,90</small>
+                        </div>
+                        <span class="order-status status-processing">Processando</span>
+                    </div>
+                    <a href="#" class="btn-primary" style="width: 100%; margin-top: 15px;">
+                        Ver Todos os Pedidos
+                    </a>
+                </div>
+            </div>
+
+            <!-- Card de lista de desejos -->
+            <div class="profile-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3 class="card-title">Lista de Desejos</h3>
+                </div>
+                <div class="card-content" id="wishlist">
+                    <div class="wishlist-item">
+                        <div class="wishlist-img">
+                            <i class="fas fa-tshirt"></i>
+                        </div>
+                        <div class="wishlist-info">
+                            <h4>Camiseta Básica</h4>
+                            <span class="wishlist-price">R$ 49,90</span>
+                        </div>
+                        <button class="btn-primary" style="padding: 8px 15px;">
+                            <i class="fas fa-shopping-cart"></i>
+                        </button>
+                    </div>
+                    <div class="wishlist-item">
+                        <div class="wishlist-img">
+                            <i class="fas fa-shoe-prints"></i>
+                        </div>
+                        <div class="wishlist-info">
+                            <h4>Tênis Casual</h4>
+                            <span class="wishlist-price">R$ 159,90</span>
+                        </div>
+                        <button class="btn-primary" style="padding: 8px 15px;">
+                            <i class="fas fa-shopping-cart"></i>
+                        </button>
+                    </div>
+                    <a href="#" class="btn-primary" style="width: 100%; margin-top: 15px;">
+                        Ver Lista Completa
+                    </a>
+                </div>
+            </div>
+
+            <!-- Card de endereços -->
+            <div class="profile-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h3 class="card-title">Endereços</h3>
+                </div>
+                <div class="card-content">
+                    <p><strong>Endereço Principal:</strong></p>
+                    <p>Rua da Moda, 123 - Centro<br>São Paulo, SP - 01234-567</p>
+                    <a href="#" class="btn-primary" style="width: 100%; margin-top: 15px;">
+                        <i class="fas fa-edit"></i> Gerenciar Endereços
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Edição de Perfil -->
+    <div class="edit-profile-modal" id="editProfileModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Editar Perfil</h2>
+                <button class="close-modal" id="closeEditModal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="editProfileForm">
+                    <div class="form-group">
+                        <label for="editProfilePic">Foto de Perfil</label>
+                        <div class="profile-pic-upload">
+                            <div class="current-pic" id="currentProfilePic">
+                                <!-- Imagem atual será carregada aqui -->
+                            </div>
+                            <input type="file" id="editProfilePic" accept="image/*" class="file-input">
+                            <label for="editProfilePic" class="upload-btn">
+                                <i class="fas fa-camera"></i> Alterar Foto
+                            </label>
+                            <div class="image-preview" id="imagePreview"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editName">Nome Completo</label>
+                        <input type="text" id="editName" class="form-input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editEmail">Email</label>
+                        <input type="email" id="editEmail" class="form-input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editPhone">Telefone</label>
+                        <input type="tel" id="editPhone" class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editPreferences">Preferências de Estilo</label>
+                        <select id="editPreferences" class="form-input">
+                            <option value="Moda casual e esportiva">Moda casual e esportiva</option>
+                            <option value="Estilo urbano e moderno">Estilo urbano e moderno</option>
+                            <option value="Looks clássicos e elegantes">Looks clássicos e elegantes</option>
+                            <option value="Tendências da temporada">Tendências da temporada</option>
+                            <option value="Peças versáteis e confortáveis">Peças versáteis e confortáveis</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editBio">Biografia</label>
+                        <textarea id="editBio" class="form-input" rows="4" placeholder="Conte um pouco sobre você..."></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel" id="cancelEdit">Cancelar</button>
+                        <button type="submit" class="btn-save" id="saveBtn">
+                            <span id="saveText">Salvar Alterações</span>
+                            <span id="saveLoading" class="loading" style="display: none;"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notificação -->
+    <div class="notification" id="notification">
+        <div class="notification-content">
+            <i class="fas fa-check-circle"></i>
+            <span>Alterações salvas com sucesso!</span>
+        </div>
+    </div>
+
+    <script>
+        // Inicializar Firebase (já está no firebase-config.js)
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+
+        // Efeito de partículas 3D
+        function initParticles() {
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({
+                alpha: true
+            });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.getElementById('particles-3d').appendChild(renderer.domElement);
+
+            const particlesGeometry = new THREE.BufferGeometry();
+            const particlesCount = 3000;
+            const posArray = new Float32Array(particlesCount * 3);
+
+            for (let i = 0; i < particlesCount * 3; i++) {
+                posArray[i] = (Math.random() - 0.5) * 10;
+            }
+
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+            const particlesMaterial = new THREE.PointsMaterial({
+                size: 0.005,
+                color: 0x26f7fe,
+                transparent: true,
+                opacity: 0.6
+            });
+
+            const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+            scene.add(particlesMesh);
+
+            camera.position.z = 5;
+
+            function animate() {
+                requestAnimationFrame(animate);
+                particlesMesh.rotation.x += 0.0005;
+                particlesMesh.rotation.y += 0.001;
+                renderer.render(scene, camera);
+            }
+
+            animate();
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+
+        // Verificar autenticação e carregar dados do usuário
+        function loadUserData() {
+            auth.onAuthStateChanged(async(user) => {
+                if (user) {
+                    console.log('Usuário logado:', user);
+
+                    try {
+                        // Buscar dados do perfil no Firestore
+                        const userDoc = await db.collection('users').doc(user.uid).get();
+
+                        if (userDoc.exists) {
+                            const userData = userDoc.data();
+                            updateProfileDisplay(userData, user);
+                        } else {
+                            // Criar perfil padrão se não existir
+                            const defaultUserData = {
+                                displayName: user.displayName || 'Usuário Vault G&D',
+                                email: user.email,
+                                phone: '',
+                                preferences: 'Moda casual e esportiva',
+                                bio: '',
+                                memberSince: new Date().getFullYear(),
+                                photoURL: user.photoURL || null,
+                                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                            };
+
+                            await db.collection('users').doc(user.uid).set(defaultUserData);
+                            updateProfileDisplay(defaultUserData, user);
+                        }
+                    } catch (error) {
+                        console.error('Erro ao carregar dados:', error);
+                        showNotification('Erro ao carregar perfil', true);
+                    }
+                } else {
+                    // Usuário não logado, redirecionar para login
+                    alert('Você precisa estar logado para acessar o perfil!');
+                    window.location.href = 'login.html';
+                }
+            });
+        }
+
+        // Atualizar a exibição do perfil
+        function updateProfileDisplay(userData, user) {
+            document.getElementById('profileName').textContent = userData.displayName || 'Usuário Vault G&D';
+            document.getElementById('profileEmail').textContent = userData.email || 'Email não disponível';
+            document.getElementById('infoName').textContent = userData.displayName || 'Usuário Vault G&D';
+            document.getElementById('infoEmail').textContent = userData.email || 'Email não disponível';
+            document.getElementById('infoPhone').textContent = userData.phone || 'Não informado';
+            document.getElementById('infoPreferences').textContent = userData.preferences || 'Moda casual e esportiva';
+            document.getElementById('infoBio').textContent = userData.bio || 'Nenhuma biografia adicionada.';
+            document.getElementById('infoMemberSince').textContent = `Janeiro ${userData.memberSince || 2024}`;
+
+            // Criar avatar
+            const profilePic = document.getElementById('profilePic');
+            const currentProfilePic = document.getElementById('currentProfilePic');
+
+            if (userData.photoURL) {
+                profilePic.innerHTML = `<img src="${userData.photoURL}" alt="${userData.displayName}">`;
+                currentProfilePic.innerHTML = `<img src="${userData.photoURL}" alt="${userData.displayName}">`;
+            } else {
+                const initials = userData.displayName ?
+                    userData.displayName.split(' ').map(n => n[0]).join('').toUpperCase() :
+                    'UG';
+                profilePic.innerHTML = `<span style="font-size: 2.5rem; font-weight: bold;">${initials}</span>`;
+                currentProfilePic.innerHTML = `<span style="font-size: 1.5rem; font-weight: bold;">${initials}</span>`;
+            }
+
+            // Preencher formulário de edição
+            document.getElementById('editName').value = userData.displayName || '';
+            document.getElementById('editEmail').value = userData.email || '';
+            document.getElementById('editPhone').value = userData.phone || '';
+            document.getElementById('editPreferences').value = userData.preferences || 'Moda casual e esportiva';
+            document.getElementById('editBio').value = userData.bio || '';
+
+            // Gerar dados aleatórios para demonstração
+            generateRandomUserData(userData.displayName);
+        }
+
+        // Gerar dados aleatórios do usuário
+        function generateRandomUserData(userName) {
+            const ordersCount = Math.floor(Math.random() * 15) + 1;
+            const wishlistCount = Math.floor(Math.random() * 8) + 1;
+            const memberSince = 2023 + Math.floor(Math.random() * 2);
+            const completionRate = Math.floor(Math.random() * 30) + 70;
+
+            document.getElementById('ordersCount').textContent = ordersCount;
+            document.getElementById('wishlistCount').textContent = wishlistCount;
+            document.getElementById('memberSince').textContent = memberSince;
+            document.getElementById('completionRate').textContent = completionRate + '%';
+            document.getElementById('infoMemberSince').textContent = `Janeiro ${memberSince}`;
+            document.getElementById('infoStatus').textContent = ordersCount > 5 ? 'VIP' : 'Ativo';
+        }
+
+        // Mostrar notificação
+        function showNotification(message, isError = false) {
+            const notification = document.getElementById('notification');
+            notification.querySelector('span').textContent = message;
+
+            if (isError) {
+                notification.classList.add('error');
+            } else {
+                notification.classList.remove('error');
+            }
+
+            notification.classList.add('show');
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Upload de imagem para Firebase Storage
+        async function uploadImage(file, userId) {
+            return new Promise((resolve, reject) => {
+                const storageRef = storage.ref();
+                const imageRef = storageRef.child(`profile-pictures/${userId}/${Date.now()}_${file.name}`);
+
+                const uploadTask = imageRef.put(file);
+
+                uploadTask.on('state_changed',
+                    (snapshot) => {
+                        // Progresso do upload (opcional)
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        console.log('Upload progress: ' + progress + '%');
+                    },
+                    (error) => {
+                        reject(error);
+                    },
+                    async() => {
+                        try {
+                            const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
+                            resolve(downloadURL);
+                        } catch (error) {
+                            reject(error);
+                        }
+                    }
+                );
+            });
+        }
+
+        // Gerenciar modal de edição
+        function setupEditModal() {
+            const editModal = document.getElementById('editProfileModal');
+            const editBtn = document.getElementById('editProfileBtn');
+            const closeBtn = document.getElementById('closeEditModal');
+            const cancelBtn = document.getElementById('cancelEdit');
+            const editForm = document.getElementById('editProfileForm');
+            const fileInput = document.getElementById('editProfilePic');
+            const imagePreview = document.getElementById('imagePreview');
+            const saveBtn = document.getElementById('saveBtn');
+            const saveText = document.getElementById('saveText');
+            const saveLoading = document.getElementById('saveLoading');
+
+            // Abrir modal
+            editBtn.addEventListener('click', () => {
+                editModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+
+            // Fechar modal
+            function closeModal() {
+                editModal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+                // Limpar preview da imagem
+                const previewImg = imagePreview.querySelector('img');
+                if (previewImg) {
+                    previewImg.style.display = 'none';
+                }
+                fileInput.value = '';
+            }
+
+            closeBtn.addEventListener('click', closeModal);
+            cancelBtn.addEventListener('click', closeModal);
+
+            // Fechar modal clicando fora
+            editModal.addEventListener('click', (e) => {
+                if (e.target === editModal) {
+                    closeModal();
+                }
+            });
+
+            // Preview da imagem selecionada
+            fileInput.addEventListener('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+
+                    reader.addEventListener('load', function() {
+                        let previewImg = imagePreview.querySelector('img');
+                        if (!previewImg) {
+                            previewImg = document.createElement('img');
+                            imagePreview.appendChild(previewImg);
+                        }
+                        previewImg.src = this.result;
+                        previewImg.style.display = 'block';
+                    });
+
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Salvar alterações
+            editForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const user = auth.currentUser;
+                if (!user) {
+                    showNotification('Usuário não autenticado', true);
+                    return;
+                }
+
+                // Mostrar loading
+                saveText.style.display = 'none';
+                saveLoading.style.display = 'inline-block';
+                saveBtn.disabled = true;
+
+                try {
+                    // Obter dados do formulário
+                    const name = document.getElementById('editName').value;
+                    const email = document.getElementById('editEmail').value;
+                    const phone = document.getElementById('editPhone').value;
+                    const preferences = document.getElementById('editPreferences').value;
+                    const bio = document.getElementById('editBio').value;
+
+                    let photoURL = null;
+
+                    // Upload da imagem se houver
+                    const fileInput = document.getElementById('editProfilePic');
+                    if (fileInput.files && fileInput.files[0]) {
+                        photoURL = await uploadImage(fileInput.files[0], user.uid);
+                    }
+
+                    // Atualizar dados no Firestore
+                    const userData = {
+                        displayName: name,
+                        email: email,
+                        phone: phone,
+                        preferences: preferences,
+                        bio: bio,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    };
+
+                    // Adicionar photoURL apenas se uma nova imagem foi enviada
+                    if (photoURL) {
+                        userData.photoURL = photoURL;
+                    }
+
+                    await db.collection('users').doc(user.uid).update(userData);
+
+                    // Atualizar perfil no Auth se o nome mudou
+                    if (name !== user.displayName) {
+                        await user.updateProfile({
+                            displayName: name
+                        });
+                    }
+
+                    // Recarregar dados
+                    await loadUserData();
+
+                    // Fechar modal
+                    closeModal();
+
+                    // Mostrar notificação
+                    showNotification('Perfil atualizado com sucesso!');
+
+                } catch (error) {
+                    console.error('Erro ao salvar perfil:', error);
+                    showNotification('Erro ao salvar perfil: ' + error.message, true);
+                } finally {
+                    // Esconder loading
+                    saveText.style.display = 'inline-block';
+                    saveLoading.style.display = 'none';
+                    saveBtn.disabled = false;
+                }
+            });
+        }
+
+        // Inicializar quando a página carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            initParticles();
+            loadUserData();
+            setupEditModal();
+        });
+    </script>
+</body>
+
+</html>

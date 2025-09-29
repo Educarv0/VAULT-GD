@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagamento PIX | Vault G&D</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #05071e;
+            color: #f8f9fa;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        /* Efeito de partículas futuristas */
+        
+        .cyber-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .cyber-particle {
+            position: absolute;
+            background: rgba(38, 247, 254, 0.15);
+            border-radius: 50%;
+            animation: cyberFloat 15s infinite linear;
+            box-shadow: 0 0 15px rgba(38, 247, 254, 0.4);
+        }
+        
+        @keyframes cyberFloat {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        /* Efeito de grade digital */
+        
+        .digital-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(38, 247, 254, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(38, 247, 254, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -2;
+            opacity: 0.4;
+            transform: perspective(500px) rotateX(60deg);
+            animation: gridScan 15s infinite linear;
+        }
+        
+        @keyframes gridScan {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 40px 40px;
+            }
+        }
+        /* Container principal */
+        
+        .pix-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+        /* Header da página */
+        
+        .pix-header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            width: 100%;
+        }
+        
+        .pix-title {
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #26f7fe, #a78344);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+            text-shadow: 0 5px 15px rgba(38, 247, 254, 0.3);
+            animation: titlePulse 3s infinite alternate;
+        }
+        
+        @keyframes titlePulse {
+            0% {
+                text-shadow: 0 5px 15px rgba(38, 247, 254, 0.3);
+            }
+            100% {
+                text-shadow: 0 5px 25px rgba(38, 247, 254, 0.6), 0 0 30px rgba(167, 131, 68, 0.4);
+            }
+        }
+        
+        .pix-subtitle {
+            color: #ccc;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        /* Conteúdo PIX */
+        
+        .pix-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            width: 100%;
+            margin-bottom: 40px;
+        }
+        
+        @media (max-width: 768px) {
+            .pix-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        /* QR Code Section */
+        
+        .qr-section {
+            background: rgba(14, 17, 53, 0.7);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(38, 247, 254, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .qr-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(38, 247, 254, 0.1), transparent);
+            animation: shimmerLine 3s infinite;
+        }
+        
+        .qr-title {
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            color: #26f7fe;
+            text-align: center;
+        }
+        
+        .qr-code-container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .qr-code-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(38, 247, 254, 0.4);
+        }
+        
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            background: #05071e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .qr-code::before {
+            content: '';
+            position: absolute;
+            width: 90%;
+            height: 90%;
+            background: linear-gradient(90deg, transparent 48%, #26f7fe 50%, transparent 52%), linear-gradient(transparent 48%, #26f7fe 50%, transparent 52%);
+            background-size: 10px 10px;
+            opacity: 0.2;
+        }
+        
+        .qr-code-inner {
+            width: 80%;
+            height: 80%;
+            background: repeating-linear-gradient(90deg, #05071e 0px, #05071e 5px, #26f7fe 5px, #26f7fe 10px), repeating-linear-gradient(180deg, #05071e 0px, #05071e 5px, #26f7fe 5px, #26f7fe 10px);
+            position: relative;
+        }
+        
+        .qr-scan-text {
+            color: #ccc;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-top: 15px;
+        }
+        /* Chave PIX Section */
+        
+        .key-section {
+            background: rgba(14, 17, 53, 0.7);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(167, 131, 68, 0.3);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .key-title {
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            color: #a78344;
+            text-align: center;
+        }
+        
+        .key-description {
+            color: #ccc;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .pix-key-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .pix-key {
+            font-family: monospace;
+            font-size: 1.2rem;
+            color: #26f7fe;
+            text-align: center;
+            word-break: break-all;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border: 1px solid rgba(38, 247, 254, 0.2);
+        }
+        
+        .copy-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(45deg, #001f6f, #0030a0);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .copy-btn:hover {
+            background: linear-gradient(45deg, #0030a0, #0040c0);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 31, 111, 0.4);
+        }
+        
+        .copy-btn.copied {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+        }
+        /* Informações de pagamento */
+        
+        .payment-info {
+            background: rgba(14, 17, 53, 0.7);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(167, 131, 68, 0.2);
+            width: 100%;
+            margin-bottom: 30px;
+        }
+        
+        .info-title {
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            color: #a78344;
+            text-align: center;
+            position: relative;
+        }
+        
+        .info-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(45deg, #a78344, #c9a66b);
+            border-radius: 3px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .info-label {
+            color: #ccc;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            color: #f8f9fa;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .info-value.amount {
+            color: #26f7fe;
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+        /* Botões de ação */
+        
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .confirm-btn {
+            padding: 16px 40px;
+            background: linear-gradient(45deg, #26f7fe, #1a8f9e);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .confirm-btn:hover {
+            background: linear-gradient(45deg, #1a8f9e, #26f7fe);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(38, 247, 254, 0.5);
+        }
+        
+        .back-btn {
+            padding: 16px 40px;
+            background: transparent;
+            color: #ccc;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #26f7fe;
+            border-color: #26f7fe;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(38, 247, 254, 0.2);
+        }
+        /* Contador regressivo */
+        
+        .countdown {
+            margin-top: 20px;
+            text-align: center;
+            color: #ccc;
+        }
+        
+        .countdown-text {
+            margin-bottom: 5px;
+        }
+        
+        .countdown-timer {
+            font-size: 1.2rem;
+            color: #26f7fe;
+            font-weight: bold;
+        }
+        /* Animações de sucesso */
+        
+        @keyframes successPulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        .success-animation {
+            animation: successPulse 2s infinite;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Efeitos de fundo futuristas -->
+    <div class="digital-grid"></div>
+    <div class="cyber-particles" id="cyberParticles"></div>
+
+    <div class="pix-container">
+        <div class="pix-header">
+            <h1 class="pix-title">Pagamento via PIX</h1>
+            <p class="pix-subtitle">Escaneie o QR Code ou copie a chave PIX para concluir seu pagamento</p>
+        </div>
+
+        <div class="pix-content">
+            <!-- QR Code Section -->
+            <div class="qr-section">
+                <h2 class="qr-title">Escaneie o QR Code</h2>
+                <div class="qr-code-container">
+                    <div class="qr-code">
+                        <div class="qr-code-inner"></div>
+                    </div>
+                </div>
+                <p class="qr-scan-text">Abra seu app de pagamento e escaneie o código</p>
+            </div>
+
+            <!-- Chave PIX Section -->
+            <div class="key-section">
+                <h2 class="key-title">Chave PIX</h2>
+                <p class="key-description">Copie a chave PIX e cole em seu aplicativo bancário</p>
+
+                <div class="pix-key-container">
+                    <div class="pix-key" id="pixKey">019022829/2/74+4f</div>
+                    <button class="copy-btn" id="copyButton">
+                        <i class="fas fa-copy"></i> Copiar Chave PIX
+                    </button>
+                </div>
+
+                <div class="countdown">
+                    <p class="countdown-text">Tempo restante para pagamento:</p>
+                    <p class="countdown-timer" id="countdown">15:00</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informações do pagamento -->
+        <div class="payment-info">
+            <h2 class="info-title">Resumo do Pagamento</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Valor a pagar</span>
+                    <span class="info-value amount" id="paymentAmount">R$ 0,00</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Beneficiário</span>
+                    <span class="info-value">Vault G&D Moda</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">CNPJ</span>
+                    <span class="info-value">12.345.678/0001-99</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Cidade</span>
+                    <span class="info-value">Açailândia, MA</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botões de ação -->
+        <div class="action-buttons">
+            <button class="confirm-btn" id="confirmPayment">
+                <i class="fas fa-check-circle"></i> Confirmar Pagamento
+            </button>
+            <button class="back-btn" onclick="window.history.back()">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Partículas futuristas
+        const particlesContainer = document.getElementById('cyberParticles');
+        for (let i = 0; i < 50; i++) {
+            const p = document.createElement('div');
+            p.classList.add('cyber-particle');
+            const size = Math.random() * 10 + 2;
+            p.style.width = size + 'px';
+            p.style.height = size + 'px';
+            p.style.left = Math.random() * 100 + '%';
+            p.style.top = '100%';
+            p.style.animationDuration = (Math.random() * 10 + 10) + 's';
+            p.style.animationDelay = (Math.random() * 5) + 's';
+            particlesContainer.appendChild(p);
+        }
+
+        // Contador regressivo
+        let timeLeft = 15 * 60; // 15 minutos em segundos
+        const countdownElement = document.getElementById('countdown');
+
+        function updateCountdown() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            countdownElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+            if (timeLeft > 0) {
+                timeLeft--;
+                setTimeout(updateCountdown, 1000);
+            } else {
+                countdownElement.textContent = "Tempo esgotado!";
+                countdownElement.style.color = "#e74c3c";
+            }
+        }
+
+        // Botão de copiar chave PIX
+        document.getElementById('copyButton').addEventListener('click', function() {
+            const pixKey = document.getElementById('pixKey').textContent;
+            navigator.clipboard.writeText(pixKey).then(() => {
+                this.innerHTML = '<i class="fas fa-check"></i> Chave Copiada!';
+                this.classList.add('copied');
+
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-copy"></i> Copiar Chave PIX';
+                    this.classList.remove('copied');
+                }, 2000);
+            });
+        });
+
+        // Botão de confirmar pagamento
+        document.getElementById('confirmPayment').addEventListener('click', function() {
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processando...';
+            this.disabled = true;
+
+            // Simulação de processamento
+            setTimeout(() => {
+                alert('Pagamento confirmado com sucesso! Obrigado por sua compra.');
+                // Redirecionar para página de confirmação
+                // window.location.href = 'confirmacao.html';
+            }, 2000);
+        });
+
+        // Carregar valor do carrinho
+        function loadPaymentData() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let total = 0;
+
+            cart.forEach(item => {
+                const priceValue = parseFloat(item.price.replace('R$ ', '').replace(',', '.'));
+                total += priceValue * item.quantity;
+            });
+
+            // Adicionar frete
+            const frete = total > 0 ? 15 : 0;
+            total += frete;
+
+            document.getElementById('paymentAmount').textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCountdown();
+            loadPaymentData();
+        });
+    </script>
+</body>
+
+</html>

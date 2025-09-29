@@ -1,0 +1,446 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vault G&D - Sua Loja de Moda</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- SCRIPTS DO FIREBASE -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="firebase-config.js"></script>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Tela de Carregamento -->
+    <div id="splash-screen">
+        <div class="splash-content">
+            <div class="logo-container">
+                <div class="gd-text">GD</div>
+                <div class="leading-text">Vault</div>
+            </div>
+
+            <div class="loader-container">
+                <div class="loader"></div>
+                <p class="loading-text">Leading</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Conteúdo Principal -->
+    <div id="main-content">
+        <!-- Notificação de item adicionado -->
+        <div class="notification" id="notification">
+            <div class="notification-content">
+                <i class="fas fa-check-circle"></i>
+                <span>Item adicionado ao carrinho!</span>
+            </div>
+        </div>
+
+        <!-- Overlay para modais -->
+        <div class="overlay" id="overlay"></div>
+
+        <!-- Carrinho de compras -->
+        <div class="cart-modal" id="cart-modal">
+            <div class="cart-header">
+                <h2 class="cart-title">Seu carrinho</h2>
+                <button class="close-cart" id="close-cart"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="cart-items" id="cart-items">
+                <div class="empty-cart">
+                    <i class="fas fa-shopping-cart"></i>
+                    <p>Seu carrinho está vazio</p>
+                </div>
+            </div>
+            <div class="cart-footer">
+                <div class="cart-total">
+                    <span class="cart-total-label">Total:</span>
+                    <span class="cart-total-price" id="cart-total-price">R$ 0,00</span>
+                </div>
+                <a href="pagamento.html" id="finalizarCompra" class="btn-finalizar">Finalizar Compra</a>
+            </div>
+        </div>
+
+        <!-- Modal de Produto -->
+        <div class="product-modal" id="product-modal">
+            <div class="product-modal-header">
+                <h2 class="product-modal-title" id="product-modal-title">Nome do Produto</h2>
+                <button class="close-product-modal" id="close-product-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="product-modal-content">
+                <div class="product-modal-image" id="product-modal-image"></div>
+                <div class="product-modal-details">
+                    <p class="product-modal-price" id="product-modal-price">R$ 0,00</p>
+                    <div class="product-modal-rating">
+                        <div class="product-stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <span class="product-modal-reviews">(42 avaliações)</span>
+                    </div>
+                    <p class="product-modal-description" id="product-modal-description">
+                        Descrição do produto será exibida aqui.
+                    </p>
+                    <button class="addToCart-modal" id="add-to-cart-modal">
+                        <i class="fas fa-shopping-cart"></i> Adicionar ao Carrinho
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Header com menu hambúrguer -->
+        <header>
+            <div class="header-container">
+                <button class="hamburger" id="hamburger">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </button>
+
+                <a href="#" class="logo">
+                    <span class="vault-text">Vault</span>
+                    <span class="gold-d">G</span>
+                    <span class="gold-ampersand">&</span>
+                    <span class="gold-d">D</span>
+                </a>
+
+                <ul class="nav-menu" id="navMenu">
+                    <li>
+                        <a href="#" class="nav-link" data-category="feminino"><i class="fas fa-female"></i> Feminino</a>
+                        <div class="submenu">
+                            <a href="#" class="submenu-link" data-category="feminino" data-subcategory="blusas">Blusas</a>
+                            <a href="#" class="submenu-link" data-category="feminino" data-subcategory="vestidos">Vestidos</a>
+                            <a href="#" class="submenu-link" data-category="feminino" data-subcategory="saias">Saias</a>
+                            <a href="#" class="submenu-link" data-category="feminino" data-subcategory="calcas">Calças</a>
+                            <a href="#" class="submenu-link" data-category="feminino" data-subcategory="blazers">Blazers</a>
+                        </div>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link" data-category="masculino"><i class="fas fa-male"></i> Masculino</a>
+                        <div class="submenu">
+                            <a href="#" class="submenu-link" data-category="masculino" data-subcategory="camisas">Camisas</a>
+                            <a href="#" class="submenu-link" data-category="masculino" data-subcategory="calcas">Calças</a>
+                            <a href="#" class="submenu-link" data-category="masculino" data-subcategory="ternos">Ternos</a>
+                        </div>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link" data-category="calcados"><i class="fas fa-shoe-prints"></i> Calçados</a>
+                        <div class="submenu">
+                            <a href="#" class="submenu-link" data-category="calcados" data-subcategory="tenis">Tênis</a>
+                            <a href="#" class="submenu-link" data-category="calcados" data-subcategory="sandalias">Sandálias</a>
+                            <a href="#" class="submenu-link" data-category="calcados" data-subcategory="botas">Botas</a>
+                        </div>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link" data-category="acessorios"><i class="fas fa-gem"></i> Acessórios</a>
+                        <div class="submenu">
+                            <a href="#" class="submenu-link" data-category="acessorios" data-subcategory="bolsas">Bolsas</a>
+                            <a href="#" class="submenu-link" data-category="acessorios" data-subcategory="oculos">Óculos</a>
+                            <a href="#" class="submenu-link" data-category="acessorios" data-subcategory="cintos">Cintos</a>
+                        </div>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link" id="cart-link"><i class="fas fa-shopping-cart"></i> Carrinho</a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link" id="orders-link"><i class="fas fa-clipboard-check"></i> Pedidos finalizados</a>
+                    </li>
+                </ul>
+
+                <div class="header-actions">
+                    <!-- Botão de busca mobile -->
+                    <button class="mobile-search-btn" id="mobileSearchBtn">
+                        <i class="fas fa-search"></i>
+                    </button>
+
+                    <!-- Container de busca -->
+                    <div class="search-container">
+                        <input type="text" class="search-input" placeholder="Buscar..." id="search-input">
+                        <button class="search-btn" id="search-btn"><i class="fas fa-search"></i></button>
+                    </div>
+
+                    <!-- Botões existentes -->
+                    <button class="login-btn" id="loginBtn">
+                    <i class="fas fa-user"></i> Entrar
+                    </button>
+                    <button class="cart-btn" id="cart-btn">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count">0</span>
+                        
+                    </button>
+
+                </div>
+            </div>
+        </header>
+
+        <!-- Hero Section com Carrossel -->
+        <section class="hero-carousel">
+            <div class="carousel-slides">
+                <div class="carousel-slide" style="background-image: url('https://carolinadeoliveira.com.br/wp-content/uploads/2024/02/estilo-casual-feminino.webp')">
+                    <div class="carousel-content">
+                        <h1>Elegância e Conforto em Cada Peça</h1>
+                        <p>Descubra nossa seleção premium de roupas femininas, masculinas e acessórios com até 40% de desconto</p>
+                        <button class="hero-btn" data-action="view-collection">Ver Coleção</button>
+                    </div>
+                </div>
+                <div class="carousel-slide" style="background-image: url('https://static.vecteezy.com/ti/fotos-gratis/t1/68490141-grupo-do-confiante-homens-dentro-elegante-ternos-pose-para-retrato-foto.jpeg')">
+                    <div class="carousel-content">
+                        <h1>Moda Masculina com Atitude</h1>
+                        <p>Camisas sociais, ternos elegantes e polos casuais para seu estilo único</p>
+                        <button class="hero-btn" data-action="buy-now">Comprar Agora</button>
+                    </div>
+                </div>
+                <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80')">
+                    <div class="carousel-content">
+                        <h1>Ofertas Exclusivas em Calçados</h1>
+                        <p>Tênis, sapatênis e sandálias com descontos especiais por tempo limitado</p>
+                        <button class="hero-btn" data-action="view-offers">Aproveitar Ofertas</button>
+                    </div>
+                </div>
+                <div class="carousel-slide" style="background-image: url('https://www.bolsasja.com.br/mundo-fashion/wp-content/uploads/2024/07/bolsas-femininas-diferentes-1.jpg')">
+                    <div class="carousel-content">
+                        <h1>Acessórios que Completam seu Look</h1>
+                        <p>Bolsas, cintos e óculos de sol para elevar seu estilo</p>
+                        <button class="hero-btn" data-action="start-shopping">Começar a Comprar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="carousel-nav carousel-prev">
+                <i class="fas fa-chevron-left"></i>
+            </div>
+            <div class="carousel-nav carousel-next">
+                <i class="fas fa-chevron-right"></i>
+            </div>
+
+            <div class="carousel-dots">
+                <div class="carousel-dot active" data-slide="0"></div>
+                <div class="carousel-dot" data-slide="1"></div>
+                <div class="carousel-dot" data-slide="2"></div>
+                <div class="carousel-dot" data-slide="3"></div>
+            </div>
+        </section>
+
+        <!-- Filtros de Categoria -->
+        <section class="filters">
+            <h2 class="filter-title">Filtrar por categoria</h2>
+            <div class="filter-options">
+                <button class="filter-btn active" data-category="all">Todos</button>
+                <button class="filter-btn" data-category="feminino">Feminino</button>
+                <button class="filter-btn" data-category="masculino">Masculino</button>
+                <button class="filter-btn" data-category="calcados">Calçados</button>
+                <button class="filter-btn" data-category="acessorios">Acessórios</button>
+            </div>
+        </section>
+
+        <!-- Grid de Produtos -->
+        <section class="products" id="productsContainer">
+            <!-- Produtos serão inseridos via JavaScript -->
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Vault G&D</h3>
+                    <p>Sua loja de moda com as melhores tendências e preços acessíveis.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-pinterest-p"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Links rápidos</h3>
+                    <a href="sobre-nós.html">Sobre nós</a>
+                    <a href="FAQ.html">Perguntas frequentes</a>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Categorias</h3>
+                    <a href="#" data-category="feminino">Roupas femininas</a>
+                    <a href="#" data-category="masculino">Roupas masculinas</a>
+                    <a href="#" data-category="moletom">Moletom</a>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Contato</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> Rua da Moda, 123</p>
+                    <p><i class="fas fa-phone"></i> (11) 9999-9999</p>
+                    <p><i class="fas fa-envelope"></i> contato@vaultgd.com</p>
+                </div>
+            </div>
+
+            <div class="copyright">
+                <p>&copy; 2025 Vault G&D - Todos os direitos reservados</p>
+            </div>
+        </footer>
+    </div>
+
+
+
+    <script src="script.js"></script>
+    <script src="compras.js"></script>
+    <script>
+        // ==================== VERIFICAÇÃO DE AUTENTICAÇÃO ====================
+        function checkAuthState() {
+            firebase.auth().onAuthStateChanged((user) => {
+                const loginBtn = document.getElementById('loginBtn');
+
+                if (user) {
+                    // Usuário está logado
+                    console.log('Usuário logado:', user);
+
+                    // Atualizar botão de login
+                    const displayName = user.displayName || 'Minha Conta';
+                    const shortName = displayName.length > 12 ? displayName.substring(0, 12) + '...' : displayName;
+
+                    loginBtn.innerHTML = `<i class="fas fa-user-check"></i> ${shortName}`;
+                    loginBtn.style.background = 'linear-gradient(45deg, #2ecc71, #27ae60)';
+
+                    // Alterar comportamento do clique para mostrar menu do usuário
+                    loginBtn.onclick = function() {
+                        showUserMenu(user);
+                    };
+                } else {
+                    // Usuário não está logado
+                    console.log('Usuário não logado');
+                    loginBtn.innerHTML = '<i class="fas fa-user"></i> Entrar';
+                    loginBtn.style.background = 'linear-gradient(45deg, #001f6f, #0030a0)';
+                    loginBtn.onclick = function() {
+                        window.location.href = 'logi n.html';
+                    };
+                }
+            });
+        }
+
+        // ==================== MENU DO USUÁRIO ====================
+        function showUserMenu(user) {
+            // Remover menu existente se houver
+            const existingMenu = document.querySelector('.user-menu-overlay');
+            if (existingMenu) {
+                document.body.removeChild(existingMenu);
+                return;
+            }
+
+            const menuHTML = `
+            <div class="user-menu" style="position: absolute; top: 60px; right: 20px; background: white; color: #333; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); padding: 15px; min-width: 200px; z-index: 1000;">
+                <div style="text-align: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">
+                    <img src="${user.photoURL || 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y'}" 
+                         style="width: 50px; height: 50px; border-radius: 50%; margin-bottom: 5px;">
+                    <p style="margin: 5px 0; font-weight: bold;">${user.displayName || 'Usuário'}</p>
+                    <p style="margin: 0; font-size: 12px; color: #666;">${user.email}</p>
+                </div>
+                <button onclick="viewProfile()" style="width: 100%; padding: 8px; background: #26f7fe; color: white; border: none; border-radius: 4px; margin-bottom: 5px; cursor: pointer;">Meu Perfil</button>
+                <button onclick="logoutUser()" style="width: 100%; padding: 8px; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer;">Sair</button>
+            </div>
+        `;
+
+            const menuOverlay = document.createElement('div');
+            menuOverlay.className = 'user-menu-overlay';
+            menuOverlay.innerHTML = menuHTML;
+            menuOverlay.style.position = 'fixed';
+            menuOverlay.style.top = '0';
+            menuOverlay.style.left = '0';
+            menuOverlay.style.width = '100%';
+            menuOverlay.style.height = '100%';
+            menuOverlay.style.zIndex = '999';
+            menuOverlay.style.background = 'transparent';
+
+            // Fechar menu ao clicar fora
+            menuOverlay.addEventListener('click', function(e) {
+                if (e.target === menuOverlay) {
+                    document.body.removeChild(menuOverlay);
+                }
+            });
+
+            document.body.appendChild(menuOverlay);
+        }
+
+        // ==================== LOGOUT ====================
+        function logoutUser() {
+            firebase.auth().signOut().then(() => {
+                localStorage.removeItem('user');
+                alert('Logout realizado com sucesso!');
+                window.location.reload();
+            }).catch((error) => {
+                console.error('Erro no logout:', error);
+                alert('Erro ao fazer logout: ' + error.message);
+            });
+        }
+
+        // ==================== VIEW PROFILE ====================
+        function viewProfile() {
+            // Salvar dados do usuário atual antes de redirecionar
+            firebase.auth().onAuthStateChanged((user) => {
+                if (user) {
+                    const userData = {
+                        uid: user.uid,
+                        displayName: user.displayName,
+                        email: user.email,
+                        photoURL: user.photoURL
+                    };
+                    localStorage.setItem('currentUser', JSON.stringify(userData));
+                    window.location.href = 'profile.html';
+                }
+            });
+        }
+
+        // ==================== INICIALIZAR QUANDO A PÁGINA CARREGAR ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthState();
+        });
+
+        // Verificar autenticação também quando a página for mostrada
+        window.addEventListener('pageshow', function() {
+            checkAuthState();
+        });
+
+        // ==================== BOTÃO FINALIZAR COMPRA ====================
+        document.getElementById('finalizarCompra').addEventListener('click', function(e) {
+            // Verificar se o usuário está logado antes de finalizar compra
+            firebase.auth().onAuthStateChanged((user) => {
+                if (!user) {
+                    e.preventDefault();
+                    alert('Por favor, faça login antes de finalizar a compra!');
+                    window.location.href = 'login.html';
+                } else {
+                    // Salvar carrinho no localStorage antes de redirecionar
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                    // A redireção ocorrerá normalmente pelo href do link
+                }
+            });
+        });
+
+        // ==================== VERIFICAÇÃO DE PRIMEIRO CARREGAMENTO ====================
+        if (!sessionStorage.getItem('alreadyLoaded')) {
+            document.getElementById('splash-screen').style.display = 'flex';
+            document.getElementById('main-content').style.opacity = '0';
+            document.body.style.overflow = 'hidden';
+
+            setTimeout(function() {
+                document.getElementById('splash-screen').style.opacity = '0';
+                setTimeout(function() {
+                    document.getElementById('splash-screen').style.display = 'none';
+                    document.getElementById('main-content').style.opacity = '1';
+                    document.body.style.overflow = 'auto';
+                    sessionStorage.setItem('alreadyLoaded', 'true');
+                }, 800);
+            }, 3000);
+        } else {
+            document.getElementById('splash-screen').style.display = 'none';
+            document.getElementById('main-content').style.opacity = '1';
+            document.body.style.overflow = 'auto';
+        }
+    </script>
+
+
+</body>
+
+</html>

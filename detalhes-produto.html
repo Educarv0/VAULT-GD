@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Produto - Vault G&D</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #05071e;
+            color: #f8f9fa;
+            overflow-x: hidden;
+            position: relative;
+        }
+        /* Efeito de partículas mágicas */
+        
+        .magic-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .particle {
+            position: absolute;
+            background: rgba(38, 247, 254, 0.6);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+            box-shadow: 0 0 10px rgba(38, 247, 254, 0.8);
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-1000px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        /* Header */
+        
+        .header {
+            background: rgba(14, 17, 53, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(38, 247, 254, 0.3);
+        }
+        
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        
+        .vault-text {
+            color: #26f7fe;
+            text-shadow: 0 0 15px rgba(38, 247, 254, 0.7);
+        }
+        
+        .gold-ampersand {
+            background: linear-gradient(45deg, #a78344, #c9a66b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0 3px;
+            font-weight: bold;
+            text-shadow: 0 2px 8px rgba(167, 131, 68, 0.5);
+        }
+        
+        .gold-d {
+            background: linear-gradient(45deg, #a78344, #c9a66b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 8px rgba(167, 131, 68, 0.5);
+        }
+        
+        .back-btn {
+            background: rgba(38, 247, 254, 0.1);
+            color: #26f7fe;
+            border: 1px solid #26f7fe;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            background: rgba(38, 247, 254, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(38, 247, 254, 0.3);
+        }
+        /* Container principal */
+        
+        .product-detail-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+        /* Galeria de imagens */
+        
+        .product-gallery {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .main-image {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            border-radius: 15px;
+            transition: transform 0.5s;
+        }
+        
+        .image-zoom-container {
+            overflow: hidden;
+            border-radius: 15px;
+            cursor: zoom-in;
+        }
+        
+        .thumbnail-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .thumbnail {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .thumbnail:hover,
+        .thumbnail.active {
+            border-color: #26f7fe;
+            transform: scale(1.1);
+        }
+        /* Informações do produto */
+        
+        .product-info {
+            background: rgba(14, 17, 53, 0.7);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(38, 247, 254, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .product-info::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(to bottom right, rgba(38, 247, 254, 0.1), transparent, rgba(167, 131, 68, 0.1));
+            transform: rotate(30deg);
+            z-index: -1;
+            animation: shine 8s infinite linear;
+        }
+        
+        @keyframes shine {
+            0% {
+                transform: rotate(30deg) translate(-10%, -10%);
+            }
+            100% {
+                transform: rotate(30deg) translate(10%, 10%);
+            }
+        }
+        
+        .product-title {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #26f7fe, #a78344);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .product-price {
+            font-size: 1.8rem;
+            color: #26f7fe;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .product-stars {
+            color: #ffd700;
+            display: flex;
+            gap: 3px;
+        }
+        
+        .product-reviews {
+            color: #ccc;
+        }
+        
+        .product-description {
+            margin-bottom: 25px;
+            line-height: 1.6;
+            color: #e0e0e0;
+        }
+        /* Seleção de tamanhos */
+        
+        .size-selection {
+            margin-bottom: 25px;
+        }
+        
+        .size-title {
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            color: #a78344;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .size-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .size-option {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        .size-option:hover {
+            border-color: #26f7fe;
+            transform: translateY(-3px);
+        }
+        
+        .size-option.selected {
+            background: #26f7fe;
+            color: #05071e;
+            border-color: #26f7fe;
+            box-shadow: 0 0 15px rgba(38, 247, 254, 0.5);
+        }
+        /* Botão de adicionar ao carrinho */
+        
+        .add-to-cart-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(45deg, #26f7fe, #1a8f9e);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .add-to-cart-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: 0.5s;
+        }
+        
+        .add-to-cart-btn:hover::before {
+            left: 100%;
+        }
+        
+        .add-to-cart-btn:hover {
+            background: linear-gradient(45deg, #1a8f9e, #26f7fe);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(38, 247, 254, 0.5);
+        }
+        /* Seção de comentários */
+        
+        .reviews-section {
+            margin-top: 40px;
+            grid-column: 1 / -1;
+            background: rgba(14, 17, 53, 0.7);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(167, 131, 68, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            color: #a78344;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(45deg, #a78344, #c9a66b);
+            border-radius: 3px;
+        }
+        
+        .review {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #26f7fe;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .reviewer-name {
+            font-weight: bold;
+            color: #26f7fe;
+        }
+        
+        .review-date {
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+        
+        .review-content {
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+        /* Efeito de zoom na imagem */
+        
+        .zoom-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 7, 30, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        
+        .zoom-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .zoomed-image {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            transform: scale(0.9);
+            transition: transform 0.3s;
+            border-radius: 10px;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+        }
+        
+        .zoom-overlay.active .zoomed-image {
+            transform: scale(1);
+        }
+        
+        .close-zoom {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.5);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .close-zoom:hover {
+            background: rgba(231, 76, 60, 0.8);
+            transform: rotate(90deg);
+        }
+        /* Responsividade */
+        
+        @media (max-width: 900px) {
+            .product-detail-container {
+                grid-template-columns: 1fr;
+            }
+            .main-image {
+                height: 400px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .product-title {
+                font-size: 1.8rem;
+            }
+            .product-price {
+                font-size: 1.5rem;
+            }
+            .thumbnail {
+                width: 60px;
+                height: 60px;
+            }
+            .size-option {
+                width: 40px;
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Efeito de partículas -->
+    <div class="magic-particles" id="particles"></div>
+
+    <!-- Overlay para zoom -->
+    <div class="zoom-overlay" id="zoomOverlay">
+        <img class="zoomed-image" id="zoomedImage" src="" alt="Zoom da imagem">
+        <div class="close-zoom" id="closeZoom"><i class="fas fa-times"></i></div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <span class="vault-text">Vault</span>
+                <span class="gold-d">G</span>
+                <span class="gold-ampersand">&</span>
+                <span class="gold-d">D</span>
+            </a>
+
+            <button class="back-btn" id="backButton">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </button>
+        </div>
+    </header>
+
+    <!-- Container principal -->
+    <div class="product-detail-container">
+        <!-- Galeria de imagens -->
+        <div class="product-gallery">
+            <div class="image-zoom-container" id="zoomContainer">
+                <img src="" alt="Imagem do produto" class="main-image" id="mainImage">
+            </div>
+
+            <div class="thumbnail-container" id="thumbnailContainer">
+                <!-- As miniaturas serão adicionadas via JavaScript -->
+            </div>
+        </div>
+
+        <!-- Informações do produto -->
+        <div class="product-info">
+            <h1 class="product-title" id="productTitle">Nome do Produto</h1>
+            <p class="product-price" id="productPrice">R$ 0,00</p>
+
+            <div class="product-rating">
+                <div class="product-stars" id="productStars">
+                    <!-- Estrelas serão adicionadas via JavaScript -->
+                </div>
+                <span class="product-reviews" id="productReviews">(0 avaliações)</span>
+            </div>
+
+            <p class="product-description" id="productDescription">
+                Descrição do produto será carregada aqui...
+            </p>
+
+            <div class="size-selection">
+                <h3 class="size-title"><i class="fas fa-ruler"></i> Selecione o tamanho:</h3>
+                <div class="size-options" id="sizeOptions">
+                    <!-- Opções de tamanho serão adicionadas via JavaScript -->
+                </div>
+            </div>
+
+            <button class="add-to-cart-btn" id="addToCartBtn">
+                <i class="fas fa-shopping-cart"></i> Adicionar ao Carrinho
+            </button>
+
+            <div class="product-meta">
+                <p><i class="fas fa-tag"></i> Categoria: <span id="productCategory"></span></p>
+                <p><i class="fas fa-box"></i> Disponível em estoque</p>
+                <p><i class="fas fa-truck"></i> Entrega em até 5 dias úteis</p>
+            </div>
+        </div>
+
+        <!-- Seção de comentários -->
+        <div class="reviews-section">
+            <h2 class="section-title">Avaliações dos Clientes</h2>
+            <div id="reviewsContainer">
+                <!-- Comentários serão adicionados via JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dados dos produtos (os mesmos 15 produtos do script.js)
+        const products = [{
+            id: 1,
+            name: "Blusa Selianne Francesa de Cetim",
+            price: "R$ 61,99",
+            category: "feminino",
+            subcategory: "blusas",
+            image: "https://img.ltwebstatic.com/v4/j/pi/2025/07/11/80/1752224487bb8217fc06e5a918ad34501a3d4075c5_thumbnail_405x.webp",
+            additionalImages: [
+                "https://img.ltwebstatic.com/v4/j/pi/2025/07/11/80/1752224487bb8217fc06e5a918ad34501a3d4075c5_thumbnail_405x.webp",
+                "https://img.ltwebstatic.com/v4/j/pi/2025/07/11/c1/175222449093da77d3eb59552ff929479d7ce0146c_thumbnail_560x.webp",
+                "https://img.ltwebstatic.com/v4/j/pi/2025/07/11/8e/175222449299acd6b2410bf4853c7be201494dcaad_thumbnail_560x.webp"
+            ],
+            badge: "Novo",
+            rating: 4.5,
+            reviews: 42,
+            description: "Blusa feminina elegante em cetim leve, com mangas soltas e gola alta com detalhe em abertura nas costas. Perfeita para compor looks sofisticados e modernos.",
+            sizes: ["P", "M", "G", "GG"],
+            reviewsData: [{
+                name: "Maria Silva",
+                date: "15/09/2023",
+                rating: 5,
+                comment: "Adorei a blusa! O tecido é de ótima qualidade e a estampa é linda. Recomendo!"
+            }, {
+                name: "Ana Costa",
+                date: "10/09/2023",
+                rating: 4,
+                comment: "Bonita e confortável, mas achei que o tamanho ficou um pouco grande. Fora isso, perfeita!"
+            }, {
+                name: "Joana Pereira",
+                date: "05/09/2023",
+                rating: 5,
+                comment: "Comprei e já quero outra! Caí perfeitamente bem e recebi vários elogios."
+            }]
+        }, {
+            id: 2,
+            name: "Manfinity Mode Camisa Social Masculina de Manga Longa",
+            price: "R$ 95,95",
+            category: "masculino",
+            subcategory: "camisas",
+            image: "https://img.ltwebstatic.com/images3_pi/2024/11/18/a4/17319229650c684511e01416679a6523adf6dd505b_thumbnail_560x.webp",
+            additionalImages: [
+                "https://img.ltwebstatic.com/images3_pi/2024/11/18/44/17319229597fe2d1eb5d62be8bafdfa15db7e187a8_thumbnail_405x.webp",
+                "https://img.ltwebstatic.com/images3_pi/2024/11/18/37/1731922962830024d79230eab3f23489b5fcb18b52_thumbnail_560x.webp",
+                "https://img.ltwebstatic.com/images3_pi/2024/11/18/1b/1731922970b977bb017cd3f47972296cc32be550ca_thumbnail_560x.webp"
+            ],
+            rating: 4.2,
+            reviews: 28,
+            description: "Camisa social masculina de cor sólida, manga longa e gola em pé. Versátil e elegante, combina com calças ou ternos para trabalho, festas, casamentos e ocasiões especiais. Ideal também como presente para filhos, pais, maridos ou namorados.",
+            sizes: ["P", "M", "G", "GG"],
+            reviewsData: [{
+                name: "Carlos Oliveira",
+                date: "18/09/2023",
+                rating: 4,
+                comment: "Boa camisa, tecido de qualidade. Só achei o comprimento das mangas um pouco curto."
+            }, {
+                name: "Pedro Santos",
+                date: "12/09/2023",
+                rating: 5,
+                comment: "Perfeita para o trabalho! Não amassa fácil e é muito confortável."
+            }, {
+                name: "Rafael Lima",
+                date: "08/09/2023",
+                rating: 4,
+                comment: "Gostei muito, mas a cor é um pouco diferente da foto."
+            }]
+        }, {
+            id: 3,
+            name: "Tênis/Sapatenis Masculino em Couro Legítimo com Zíper Lateral – Marrom",
+            price: "R$ 59,90",
+            category: "calcados",
+            subcategory: "tenis",
+            image: "https://static.netshoes.com.br/produtos/tenis-sapatenis-couro-legitimo-confort-leve-macio/38/58X-1141-138/58X-1141-138_zoom1.jpg?ts=1695662785&ims=1088x",
+            additionalImages: [
+                "https://static.netshoes.com.br/produtos/tenis-sapatenis-couro-legitimo-confort-leve-macio/38/58X-1141-138/58X-1141-138_zoom1.jpg?ts=1695662785&ims=1088x",
+                "https://static.netshoes.com.br/produtos/tenis-sapatenis-couro-legitimo-confort-leve-macio/38/58X-1141-138/58X-1141-138_zoom2.jpg?ts=1695662785&ims=1088x",
+                "https://static.netshoes.com.br/produtos/tenis-sapatenis-couro-legitimo-confort-leve-macio/38/58X-1141-138/58X-1141-138_zoom3.jpg?ts=1695662785&ims=1088x"
+            ],
+            badge: "Promo",
+            rating: 4.8,
+            reviews: 67,
+            description: "Sapatenis masculino em couro legítimo, com zíper lateral e sola costurada de borracha macia. Confortável, leve e prático para o dia a dia, combinando estilo casual e modernidade.",
+            sizes: ["34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44"],
+            reviewsData: [{
+                name: "Carlos Oliveira",
+                date: "18/09/2023",
+                rating: 5,
+                comment: "Melhor tênis que já comprei! Conforto incrível e amortece muito bem."
+            }, {
+                name: "Pedro Santos",
+                date: "12/09/2023",
+                rating: 4,
+                comment: "Bom tênis, mas a numeração ficou um pouco apertada. Recomendo comprar um número maior."
+            }, {
+                name: "Rafael Lima",
+                date: "08/09/2023",
+                rating: 5,
+                comment: "Produto de alta qualidade! Vale cada centavo. Já estou usando nas minhas corridas diárias."
+            }]
+        }, {
+            id: 4,
+            name: "Bolsa Feminina de Couro PU para Laptop 15,6 Impermeável",
+            price: "R$ 259,00",
+            category: "acessorios",
+            subcategory: "bolsas",
+            image: "https://m.media-amazon.com/images/I/81cqlwpIxoL._AC_SX569_.jpg",
+            additionalImages: [
+                "https://m.media-amazon.com/images/I/81cqlwpIxoL._AC_SX569_.jpg",
+                "https://m.media-amazon.com/images/I/61njpZ-FMbL._AC_SX569_.jpg",
+                "https://m.media-amazon.com/images/I/71hDXAhu30L._AC_SX569_.jpg"
+            ],
+            rating: 4.3,
+            reviews: 35,
+            description: "BBolsa feminina elegante e resistente, feita em couro PU impermeável com forro de nylon. Possui compartimento acolchoado para laptop de até 15,6, vários bolsos organizadores e alça ajustável. Ideal para trabalho, faculdade, viagens e uso diário, unindo estilo, praticidade e durabilidade.",
+            sizes: ["Único"],
+            reviewsData: [{
+                name: "Ana Paula",
+                date: "20/09/2023",
+                rating: 5,
+                comment: "Bolsa linda e de ótima qualidade! Couro legítimo e acabamento perfeito."
+            }, {
+                name: "Fernanda Costa",
+                date: "15/09/2023",
+                rating: 4,
+                comment: "Adorei a bolsa, mas achei as alças um pouco curtas para usar no ombro."
+            }, {
+                name: "Juliana Santos",
+                date: "10/09/2023",
+                rating: 5,
+                comment: "Perfeita! Espaçosa e muito elegante. Recebi vários elogios."
+            }]
+        }, {
+            id: 5,
+            name: "Vestido Maxi Montenegro",
+            price: "R$ 299,00",
+            category: "feminino",
+            subcategory: "vestidos",
+            image: "https://http2.mlstatic.com/D_NQ_NP_2X_777622-MLB85540809432_062025-F-vestido-de-noite-preto-de-manga-comprida-a.webp",
+            additionalImages: [
+                "https://http2.mlstatic.com/D_NQ_NP_2X_777622-MLB85540809432_062025-F-vestido-de-noite-preto-de-manga-comprida-a.webp",
+                "https://http2.mlstatic.com/D_NQ_NP_2X_674629-CBT82830958304_032025-F-vestido-de-noite-preto-de-manga-comprida-a.webp",
+                "https://http2.mlstatic.com/D_NQ_NP_2X_779478-CBT82830958294_032025-F-vestido-de-noite-preto-de-manga-comprida-a.webp"
+            ],
+            rating: 4.7,
+            reviews: 53,
+            description: "Vestido longo e fluido que valoriza a silhueta com elegância. Confortável e versátil, combina com ocasiões especiais ou momentos casuais. Confeccionado em tecido de qualidade, une sofisticação, leveza e durabilidade.",
+            sizes: ["P", "M", "G"],
+            reviewsData: [{
+                name: "Camila Oliveira",
+                date: "22/09/2023",
+                rating: 5,
+                comment: "Vestido lindo! Usei em um casamento e recebi muitos elogios. Tecido ótimo."
+            }, {
+                name: "Patrícia Silva",
+                date: "18/09/2023",
+                rating: 4,
+                comment: "Muito bonito, mas a cor é um pouco diferente da foto."
+            }, {
+                name: "Tatiane Costa",
+                date: "12/09/2023",
+                rating: 5,
+                comment: "Amei! Confortável e elegante. Comprei outra cor!"
+            }]
+        }, {
+            id: 6,
+            name: "PoloTech Marinho Navy",
+            price: "R$ 149,90",
+            category: "masculino",
+            subcategory: "camisas",
+            image: "https://acdn-us.mitiendanube.com/stores/005/697/673/products/basicus-12-057509-52e58754d5c9ca7c0e17487316048049-1024-1024.webp",
+            additionalImages: [
+                "https://acdn-us.mitiendanube.com/stores/005/697/673/products/basicus-12-057509-52e58754d5c9ca7c0e17487316048049-1024-1024.webp",
+                "https://acdn-us.mitiendanube.com/stores/005/697/673/products/basicus-12-057514-29d48217ae7dd5c04317487316065417-640-0.webp",
+                "https://acdn-us.mitiendanube.com/stores/005/697/673/products/basicus-12-057520-ca98295fcb2323a6f117487316060229-640-0.webp"
+            ],
+            badge: "Lançamento",
+            rating: 4.0,
+            reviews: 19,
+            description: "Camisa polo com estrutura leve, elástica na medida certa e gola reforçada que mantém o visual alinhado. Toque macio, respirável e que não amassa durante o dia. Conforto, praticidade e estilo em uma peça versátil para todas as ocasiões.",
+            sizes: ["P", "M", "G", "GG"],
+            reviewsData: [{
+                name: "Ricardo Almeida",
+                date: "25/09/2023",
+                rating: 4,
+                comment: "Camisa bonita e de boa qualidade. Só achei que poderia ser um pouco mais quente."
+            }, {
+                name: "Bruno Costa",
+                date: "20/09/2023",
+                rating: 5,
+                comment: "Perfeita! Estava procurando uma jaqueta jeans assim há tempos."
+            }, {
+                name: "Felipe Santos",
+                date: "15/09/2023",
+                rating: 3,
+                comment: "Boa, mas o botão é frágil. Já estragou depois de pouco uso."
+            }]
+        }, {
+            id: 7,
+            name: "Sandália Feminina Casual Clássica Salto Médio Grosso Bloco",
+            price: "R$ 129,90",
+            category: "calcados",
+            subcategory: "sandalias",
+            image: "https://http2.mlstatic.com/D_NQ_NP_2X_891270-MLB79754352877_102024-F-sandalia-feminina-casual-classica-salto-medio-grosso-bloco.webp",
+            additionalImages: [
+                "https://http2.mlstatic.com/D_NQ_NP_2X_891270-MLB79754352877_102024-F-sandalia-feminina-casual-classica-salto-medio-grosso-bloco.webp",
+                "https://http2.mlstatic.com/D_NQ_NP_2X_675686-MLB79507163926_102024-F-sandalia-feminina-casual-classica-salto-medio-grosso-bloco.webp",
+                "https://http2.mlstatic.com/D_NQ_NP_2X_969451-MLB79754577495_102024-F-sandalia-feminina-casual-classica-salto-medio-grosso-bloco.webp"
+            ],
+            rating: 4.6,
+            reviews: 47,
+            description: "Sandália feminina com salto bloco médio de 4,5 cm, bico quadrado arredondado e traseiro fechado. Confeccionada em napa sintética com solado antiderrapante, oferece conforto, praticidade e estilo. Versátil, combina com vestidos, saias, calças e é ideal para festas, eventos ou uso no dia a dia.",
+            sizes: ["34", "35", "36", "37", "38", "39"],
+            reviewsData: [{
+                name: "Amanda Silva",
+                date: "28/09/2023",
+                rating: 5,
+                comment: "Sandália linda e confortável! Usei o dia todo e não machucou nada."
+            }, {
+                name: "Bianca Costa",
+                date: "22/09/2023",
+                rating: 4,
+                comment: "Bonita, mas o salto é um pouco instável."
+            }, {
+                name: "Carolina Oliveira",
+                date: "18/09/2023",
+                rating: 5,
+                comment: "Amei! Confortável e linda. Comprei em duas cores!"
+            }]
+        }, {
+            id: 8,
+            name: "Óculos de Sol Oxer Redondo Adulto – Preto",
+            price: "R$ 59,62",
+            category: "acessorios",
+            subcategory: "oculos",
+            image: "https://http2.mlstatic.com/D_NQ_NP_2X_631390-MLU77387420409_072024-F.webp",
+            additionalImages: [
+                "https://http2.mlstatic.com/D_NQ_NP_2X_631390-MLU77387420409_072024-F.webp",
+                "https://http2.mlstatic.com/D_NQ_NP_2X_787325-MLU77174276526_072024-F.webp",
+                "https://http2.mlstatic.com/D_NQ_NP_2X_635319-MLU77387706581_072024-F.webp"
+            ],
+            rating: 4.4,
+            reviews: 31,
+            description: "Óculos de sol com proteção UV e armação moderna. Estilo e proteção para seus olhos. Design atual e confortável.",
+            sizes: ["Único"],
+            reviewsData: [{
+                name: "Diego Almeida",
+                date: "30/09/2023",
+                rating: 5,
+                comment: "Óculos de ótima qualidade! Proteção UV real e estilo incrível."
+            }, {
+                name: "Mariana Costa",
+                date: "25/09/2023",
+                rating: 4,
+                comment: "Gostei, mas a armação é um pouco grande para meu rosto."
+            }, {
+                name: "Rodrigo Santos",
+                date: "20/09/2023",
+                rating: 5,
+                comment: "Perfeito! Estilo e proteção de qualidade."
+            }]
+        }, {
+            id: 9,
+            name: "Saia Longa Feminina Couro Cintura Alta Plissada Elegante",
+            price: "R$ 59,99",
+            category: "feminino",
+            subcategory: "saias",
+            image: "https://http2.mlstatic.com/D_NQ_NP_2X_936754-MLB84466088766_052025-F-saia-longa-feminina-couro-cintura-alta-plissada-elegante.webp",
+            additionalImages: [
+                "https://http2.mlstatic.com/D_NQ_NP_2X_936754-MLB84466088766_052025-F-saia-longa-feminina-couro-cintura-alta-plissada-elegante.webp",
+                "https://http2.mlstatic.com/D_NQ_NP_2X_935675-MLB77197585841_062024-F-saia-longa-feminina-couro-cintura-alta-plissada-elegante.webp",
+                "https://http2.mlstatic.com/D_NQ_NP_2X_889256-MLB77197399155_062024-F-saia-longa-feminina-couro-cintura-alta-plissada-elegante.webp"
+            ],
+            rating: 4.1,
+            reviews: 680,
+            description: "Saia em couro ecológico macio e confortável, com boa elasticidade, não fica transparente e não forma bolinhas após a lavagem. Disponível nos tamanhos P, M, G. (Cinto não incluso).",
+            sizes: ["P", "M", "G"],
+            reviewsData: [{
+                name: "Luciana Oliveira",
+                date: "02/10/2023",
+                rating: 4,
+                comment: "Saia bonita e confortável. Só achei o tecido um pouco fino."
+            }, {
+                name: "Patrícia Silva",
+                date: "28/09/2023",
+                rating: 5,
+                comment: "Amei! Confortável e versátil. Já usei várias vezes."
+            }, {
+                name: "Tatiane Costa",
+                date: "25/09/2023",
+                rating: 4,
+                comment: "Boa qualidade pelo preço. Recomendo."
+            }]
+        }, {
+            id: 10,
+            name: "Calça Masculina Jeans Reta Elastano Lisa Tradicional Casual",
+            price: "R$ 50,99",
+            category: "masculino",
+            subcategory: "calcas",
+            image: "https://http2.mlstatic.com/D_NQ_NP_2X_857588-MLB88227722990_072025-F-calca-masculina-jeans-reta-elastano-lisa-tradicional-casual.webp",
+            additionalImages: [
+                "https://http2.mlstatic.com/D_NQ_NP_2X_857588-MLB88227722990_072025-F-calca-masculina-jeans-reta-elastano-lisa-tradicional-casual.webp",
+                "https://http2.mlstatic.com/D_NQ_NP_2X_927638-MLB85935824149_062025-F-calca-masculina-jeans-reta-elastano-lisa-tradicional-casual.webp",
+                "https://http2.mlstatic.com/D_NQ_NP_2X_685489-MLB85525225720_062025-F-calca-masculina-jeans-reta-elastano-lisa-tradicional-casual.webp"
+            ],
+            badge: "Destaque",
+            rating: 4.0,
+            reviews: 240,
+            description: "Calça jeans masculina com modelagem slim. Confortável e resistente para o dia a dia. Tecido de algodão com elastano.",
+            sizes: ["38", "40", "42", "44", "46"],
+            reviewsData: [{
+                name: "Ricardo Almeida",
+                date: "05/10/2023",
+                rating: 4,
+                comment: "Calça de boa qualidade. Caimento bom e tecido confortável."
+            }, {
+                name: "Bruno Costa",
+                date: "30/09/2023",
+                rating: 3,
+                comment: "Boa, mas a cor desbotou um pouco após a primeira lavagem."
+            }, {
+                name: "Felipe Santos",
+                date: "25/09/2023",
+                rating: 5,
+                comment: "Perfeita! Modelagem slim ideal e tecido de qualidade."
+            }]
+        }, {
+            id: 11,
+            name: "Calça Alfataria Social com Cinto Feminina Pantalona",
+            price: "R$ 29,90",
+            category: "feminino",
+            subcategory: "calcas",
+            image: "https://img.ltwebstatic.com/v4/j/spmp/2025/04/24/4a/1745500450a70b9723d2e88986e6b119ff81b209bf_thumbnail_405x.webp",
+            additionalImages: [
+                "https://img.ltwebstatic.com/v4/j/spmp/2025/04/24/4a/1745500450a70b9723d2e88986e6b119ff81b209bf_thumbnail_405x.webp",
+                "https://img.ltwebstatic.com/v4/j/spmp/2025/04/24/3b/1745500450b438900d418a69416acc6f5885b8da98_thumbnail_560x.webp",
+                "https://img.ltwebstatic.com/v4/j/spmp/2025/04/24/e5/174550045042c569d726821f69889c1124033535fa_thumbnail_560x.webp"
+            ],
+            rating: 4.3,
+            reviews: 81,
+            description: "Calça pantalona de alfaiataria feminina, com corte social elegante e caimento sofisticado. Acompanha cinto para ajuste e estilo, perfeita para compor looks modernos em ocasiões formais ou no dia a dia.",
+            sizes: ["P", "M", "G", "GG"],
+            reviewsData: [{
+                name: "Amanda Silva",
+                date: "08/10/2023",
+                rating: 5,
+                comment: "Calça incrível! Estilosa e confortável. Os bolsos são muito úteis."
+            }, {
+                name: "Bianca Costa",
+                date: "02/10/2023",
+                rating: 4,
+                comment: "Gostei muito, mas o tecido é um pouco quente para o verão."
+            }, {
+                name: "Carolina Oliveira",
+                date: "28/09/2023",
+                rating: 5,
+                comment: "Amei! Estilo único e qualidade excelente."
+            }]
+        }, {
+            id: 12,
+            name: "Calvin Klein Cinto Em Couro Dupla Face Masculino Dia A Dia",
+            price: "R$ 79,90",
+            category: "acessorios",
+            subcategory: "cintos",
+            image: "https://http2.mlstatic.com/D_NQ_NP_2X_695599-MLB85246242961_052025-F-calvin-klein-cinto-em-couro-dupla-face-masculino-dia-a-dia.webp",
+            additionalImages: [
+                "https://http2.mlstatic.com/D_NQ_NP_2X_695599-MLB85246242961_052025-F-calvin-klein-cinto-em-couro-dupla-face-masculino-dia-a-dia.webp",
+                "https://http2.mlstatic.com/D_NQ_NP_2X_678279-MLB84945801444_052025-F-calvin-klein-cinto-em-couro-dupla-face-masculino-dia-a-dia.webp",
+                "https://http2.mlstatic.com/D_NQ_NP_2X_812771-MLB85246865799_052025-F-calvin-klein-cinto-em-couro-dupla-face-masculino-dia-a-dia.webp"
+            ],
+            rating: 4.7,
+            reviews: 56,
+            description: "Cinto em couro ecológico premium, resistente e elegante. Modelo dupla face, oferecendo dois estilos em uma única peça. Com design moderno e acabamento refinado, é versátil para qualquer ocasião.",
+            sizes: ["Único"],
+            reviewsData: [{
+                name: "Diego Almeida",
+                date: "10/10/2023",
+                rating: 5,
+                comment: "Cinto de ótima qualidade! Couro legítimo e fivela resistente."
+            }, {
+                name: "Mariana Costa",
+                date: "05/10/2023",
+                rating: 4,
+                comment: "Bom produto, mas poderia ter mais furos para ajuste."
+            }, {
+                name: "Rodrigo Santos",
+                date: "30/09/2023",
+                rating: 5,
+                comment: "Perfeito! Exatamente como na foto."
+            }]
+        }, {
+            id: 13,
+            name: "Blazer Feminino Alfaiataria com Lapela e Botão",
+            price: "R$ 156,99",
+            category: "feminino",
+            subcategory: "blazers",
+            image: "https://img.ltwebstatic.com/images3_ps1/2024/09/05/1a/17255207321b314100eb24f789bb19ac1da3624dfe.png",
+            additionalImages: [
+                "https://img.ltwebstatic.com/v4/j/spmp/2025/06/15/24/17499478421b27037379b6f2783a7c19076f620e18_thumbnail_405x.webp",
+                "https://img.ltwebstatic.com/v4/j/spmp/2025/06/15/81/17499478439041efc041f73cf0cc29ee727a58e44a_thumbnail_560x.webp",
+                "https://img.ltwebstatic.com/v4/j/spmp/2025/06/15/2f/1749947843f31bbdef39f0a22ee32070384599318b_thumbnail_560x.webp"
+            ],
+            badge: "Elegante",
+            rating: 4.9,
+            reviews: 72,
+            description: "Blazer feminino de alfaiataria com lapela trespassada e corte acinturado. Elegante e versátil, combina sofisticação com modernidade, ideal para compor looks sociais ou casuais com estilo.",
+            sizes: ["P", "M", "G", "GG"],
+            reviewsData: [{
+                name: "Luciana Oliveira",
+                date: "12/10/2023",
+                rating: 5,
+                comment: "Blazer perfeito! Qualidade excepcional e caimento impecável."
+            }, {
+                name: "Patrícia Silva",
+                date: "08/10/2023",
+                rating: 5,
+                comment: "Amei! Uso para trabalhar e sempre recebo elogios."
+            }, {
+                name: "Tatiane Costa",
+                date: "05/10/2023",
+                rating: 4,
+                comment: "Muito bom, mas achei o preço um pouco elevado."
+            }]
+        }, {
+            id: 14,
+            name: "Terno Italiano Slim",
+            price: "R$ 169,90",
+            category: "masculino",
+            subcategory: "ternos",
+            image: "https://http2.mlstatic.com/D_NQ_NP_2X_635728-MLB86163086262_062025-F-terno-italiano-slim-promoco-imperdivel-todas-as-cores.webp",
+            additionalImages: [
+                "https://http2.mlstatic.com/D_NQ_NP_2X_635728-MLB86163086262_062025-F-terno-italiano-slim-promoco-imperdivel-todas-as-cores.webp",
+                "https://http2.mlstatic.com/D_NQ_NP_2X_747654-MLB82760892599_022025-F-terno-italiano-slim-promoco-imperdivel-todas-as-cores.webp",
+                "https://http2.mlstatic.com/D_NQ_NP_2X_869403-MLB82760992083_022025-F-terno-italiano-slim-promoco-imperdivel-todas-as-cores.webp"
+            ],
+            rating: 4.2,
+            reviews: 38,
+            description: "Terno masculino corte italiano slim, moderno e sofisticado. Blazer todo forrado em cetim, com bolsos internos e externos, botões nas mangas e fechamento frontal. Acompanha calça, cabide e capa plástica. Elegância e conforto em um só conjunto.",
+            sizes: ["38", "40", "42", "44", "46"],
+            reviewsData: [{
+                name: "Ricardo Almeida",
+                date: "15/10/2023",
+                rating: 4,
+                comment: "Terno de boa qualidade. Corte moderno e tecido bom."
+            }, {
+                name: "Bruno Costa",
+                date: "10/10/2023",
+                rating: 5,
+                comment: "Perfeito para formatura! Caimento excelente."
+            }, {
+                name: "Felipe Santos",
+                date: "05/10/2023",
+                rating: 4,
+                comment: "Bom terno, mas a calça ficou um pouco longa."
+            }]
+        }, {
+            id: 15,
+            name: "Coturno Feminino Bota Tratorada Salto Baixo Confortável",
+            price: "R$ 69,990",
+            category: "calcados",
+            subcategory: "botas",
+            image: "https://http2.mlstatic.com/D_NQ_NP_2X_893251-MLB49291577009_032022-F-coturno-feminino-bota-tratorada-salto-baixo-confortavel.webp",
+            additionalImages: [
+                "https://http2.mlstatic.com/D_NQ_NP_2X_893251-MLB49291577009_032022-F-coturno-feminino-bota-tratorada-salto-baixo-confortavel.webp",
+                "https://http2.mlstatic.com/D_NQ_NP_2X_817048-MLB49292053314_032022-F-coturno-feminino-bota-tratorada-salto-baixo-confortavel.webp",
+                "https://http2.mlstatic.com/D_NQ_NP_2X_998526-MLB49291460901_032022-F-coturno-feminino-bota-tratorada-salto-baixo-confortavel.webp"
+            ],
+            badge: "Tendência",
+            rating: 4.6,
+            reviews: 22996,
+            description: "Coturno feminino com sola tratorada e salto médio. Possui forração macia e espuma extra no cano, garantindo conforto no calce. Estiloso e versátil, é perfeito para compor looks modernos e despojados sem abrir mão do conforto.",
+            sizes: ["34", "35", "36", "37", "38", "39", "40", "41", "42"],
+            reviewsData: [{
+                name: "Carlos Oliveira",
+                date: "18/10/2023",
+                rating: 5,
+                comment: "Bota incrível! Confortável e estilosa. Couro de ótima qualidade."
+            }, {
+                name: "Pedro Santos",
+                date: "12/10/2023",
+                rating: 4,
+                comment: "Boa bota, mas demorou a amaciar."
+            }, {
+                name: "Rafael Lima",
+                date: "08/10/2023",
+                rating: 5,
+                comment: "Perfeita! Aquece bem e é muito estilosa."
+            }]
+        }];
+
+        // Dados do produto (serão preenchidos via parâmetros da URL)
+        let product = {};
+
+        // Função para carregar partículas de fundo
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 30;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+
+                const size = Math.random() * 10 + 3;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100 + 100}%`;
+
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+                particle.style.animationDuration = `${Math.random() * 15 + 15}s`;
+
+                if (Math.random() > 0.5) {
+                    particle.style.background = 'rgba(167, 131, 68, 0.6)';
+                    particle.style.boxShadow = '0 0 10px rgba(167, 131, 68, 0.8)';
+                }
+
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Função para carregar os dados do produto
+        function loadProductData() {
+            // Obter ID do produto da URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+
+            // Buscar produto pelo ID
+            const foundProduct = products.find(p => p.id === parseInt(productId));
+
+            if (!foundProduct) {
+                // Se não encontrar, redirecionar para a página inicial
+                alert('Produto não encontrado! Redirecionando para a página inicial.');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Usar produto encontrado
+            product = foundProduct;
+
+            // Preencher os dados do produto na página
+            document.getElementById('productTitle').textContent = product.name;
+            document.getElementById('productPrice').textContent = product.price;
+            document.getElementById('productDescription').textContent = product.description;
+            document.getElementById('productCategory').textContent = product.category;
+            document.getElementById('productReviews').textContent = `(${product.reviews} avaliações)`;
+
+            // Configurar imagem principal
+            const mainImage = document.getElementById('mainImage');
+            mainImage.src = product.image;
+            mainImage.alt = product.name;
+
+            // Configurar miniaturas
+            const thumbnailContainer = document.getElementById('thumbnailContainer');
+            thumbnailContainer.innerHTML = '';
+
+            product.additionalImages.forEach((img, index) => {
+                const thumbnail = document.createElement('img');
+                thumbnail.src = img;
+                thumbnail.alt = `Visualização ${index + 1} do ${product.name}`;
+                thumbnail.classList.add('thumbnail');
+                if (index === 0) thumbnail.classList.add('active');
+
+                thumbnail.addEventListener('click', () => {
+                    // Remover classe active de todas as miniaturas
+                    document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+                    // Adicionar classe active à miniatura clicada
+                    thumbnail.classList.add('active');
+                    // Alterar imagem principal
+                    mainImage.src = img;
+                });
+
+                thumbnailContainer.appendChild(thumbnail);
+            });
+
+            // Gerar estrelas de avaliação
+            const starsContainer = document.getElementById('productStars');
+            starsContainer.innerHTML = '';
+
+            const fullStars = Math.floor(product.rating);
+            const hasHalfStar = product.rating % 1 !== 0;
+
+            for (let i = 0; i < fullStars; i++) {
+                const star = document.createElement('i');
+                star.classList.add('fas', 'fa-star');
+                starsContainer.appendChild(star);
+            }
+
+            if (hasHalfStar) {
+                const star = document.createElement('i');
+                star.classList.add('fas', 'fa-star-half-alt');
+                starsContainer.appendChild(star);
+            }
+
+            const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+            for (let i = 0; i < emptyStars; i++) {
+                const star = document.createElement('i');
+                star.classList.add('far', 'fa-star');
+                starsContainer.appendChild(star);
+            }
+
+            // Gerar opções de tamanho baseadas na categoria
+            const sizeOptions = document.getElementById('sizeOptions');
+            sizeOptions.innerHTML = '';
+
+            let sizes = [];
+            if (product.category === 'feminino' || product.category === 'masculino') {
+                sizes = ["P", "M", "G", "GG"];
+            } else if (product.category === 'calcados') {
+                sizes = ["34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44"];
+            } else if (product.category === 'acessorios') {
+                sizes = ["Único"];
+            } else {
+                sizes = ["P", "M", "G", "GG"];
+            }
+
+            sizes.forEach(size => {
+                const sizeOption = document.createElement('div');
+                sizeOption.classList.add('size-option');
+                sizeOption.textContent = size;
+
+                sizeOption.addEventListener('click', () => {
+                    // Remover seleção anterior
+                    document.querySelectorAll('.size-option').forEach(opt => opt.classList.remove('selected'));
+                    // Selecionar novo tamanho
+                    sizeOption.classList.add('selected');
+                });
+
+                sizeOptions.appendChild(sizeOption);
+            });
+
+            // Gerar comentários
+            const reviewsContainer = document.getElementById('reviewsContainer');
+            reviewsContainer.innerHTML = '';
+
+            product.reviewsData.forEach((review, index) => {
+                setTimeout(() => {
+                    const reviewElement = document.createElement('div');
+                    reviewElement.classList.add('review');
+
+                    // Gerar estrelas para a avaliação
+                    let starsHTML = '';
+                    for (let i = 0; i < 5; i++) {
+                        if (i < review.rating) {
+                            starsHTML += '<i class="fas fa-star" style="color: #ffd700; font-size: 0.9rem;"></i>';
+                        } else {
+                            starsHTML += '<i class="far fa-star" style="color: #ffd700; font-size: 0.9rem;"></i>';
+                        }
+                    }
+
+                    reviewElement.innerHTML = `
+                        <div class="review-header">
+                            <div>
+                                <div class="reviewer-name">${review.name}</div>
+                                <div>${starsHTML}</div>
+                            </div>
+                            <div class="review-date">${review.date}</div>
+                        </div>
+                        <div class="review-content">${review.comment}</div>
+                    `;
+
+                    reviewsContainer.appendChild(reviewElement);
+                }, index * 200); // Adiciona um pequeno delay para animação
+            });
+        }
+
+        // Configurar zoom da imagem
+        function setupImageZoom() {
+            const zoomContainer = document.getElementById('zoomContainer');
+            const zoomOverlay = document.getElementById('zoomOverlay');
+            const zoomedImage = document.getElementById('zoomedImage');
+            const closeZoom = document.getElementById('closeZoom');
+            const mainImage = document.getElementById('mainImage');
+
+            zoomContainer.addEventListener('click', () => {
+                zoomOverlay.classList.add('active');
+                zoomedImage.src = mainImage.src;
+            });
+
+            closeZoom.addEventListener('click', () => {
+                zoomOverlay.classList.remove('active');
+            });
+
+            zoomOverlay.addEventListener('click', (e) => {
+                if (e.target === zoomOverlay) {
+                    zoomOverlay.classList.remove('active');
+                }
+            });
+        }
+
+        // Configurar botão de voltar
+        function setupBackButton() {
+            document.getElementById('backButton').addEventListener('click', () => {
+                window.history.back();
+            });
+        }
+
+        // Configurar botão de adicionar ao carrinho
+        function setupAddToCartButton() {
+            document.getElementById('addToCartBtn').addEventListener('click', () => {
+                const selectedSize = document.querySelector('.size-option.selected');
+
+                if (!selectedSize && product.sizes.length > 0) {
+                    alert('Por favor, selecione um tamanho antes de adicionar ao carrinho.');
+                    return;
+                }
+
+                const btn = document.getElementById('addToCartBtn');
+                const originalText = btn.innerHTML;
+
+                btn.innerHTML = '<i class="fas fa-check"></i> Adicionado ao Carrinho!';
+                btn.style.background = 'linear-gradient(45deg, #2ecc71, #27ae60)';
+
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = '';
+
+                    // Aqui você adicionaria a lógica para adicionar ao carrinho
+                    alert(`Produto "${product.name}" adicionado ao carrinho!`);
+                }, 2000);
+            });
+        }
+
+        // Inicializar a página quando carregar
+        window.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            loadProductData();
+            setupImageZoom();
+            setupBackButton();
+            setupAddToCartButton();
+        });
+
+        // Configurar botão de voltar
+        function setupBackButton() {
+            document.getElementById('backButton').addEventListener('click', () => {
+                // Usando history.back() para voltar à página anterior sem recarregar
+                window.history.back();
+            });
+        }
+    </script>
+</body>
+
+</html>

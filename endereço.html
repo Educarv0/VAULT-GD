@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Endereço de Entrega - Vault G&D</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #05071e;
+            color: #f8f9fa;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        /* Efeito de ondas holográficas */
+        
+        .holographic-waves {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            opacity: 0.3;
+            overflow: hidden;
+        }
+        
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200%;
+            height: 15%;
+            background: linear-gradient(90deg, transparent, rgba(38, 247, 254, 0.1), transparent);
+            animation: waveAnimation 15s linear infinite;
+            transform-origin: center bottom;
+        }
+        
+        .wave:nth-child(1) {
+            animation-delay: 0s;
+            animation-duration: 12s;
+            height: 12%;
+            opacity: 0.4;
+        }
+        
+        .wave:nth-child(2) {
+            animation-delay: -2s;
+            animation-duration: 18s;
+            height: 10%;
+            opacity: 0.3;
+        }
+        
+        .wave:nth-child(3) {
+            animation-delay: -5s;
+            animation-duration: 25s;
+            height: 8%;
+            opacity: 0.2;
+        }
+        
+        @keyframes waveAnimation {
+            0% {
+                transform: translateX(0) translateY(0) scaleY(1);
+            }
+            50% {
+                transform: translateX(-25%) translateY(-5px) scaleY(0.9);
+            }
+            100% {
+                transform: translateX(-50%) translateY(0) scaleY(1);
+            }
+        }
+        /* Efeito de partículas flutuantes */
+        
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .particle {
+            position: absolute;
+            background: rgba(167, 131, 68, 0.15);
+            border-radius: 50%;
+            animation: floatParticle 20s infinite linear;
+        }
+        
+        @keyframes floatParticle {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.7;
+            }
+            90% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        /* Container principal */
+        
+        .address-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 30px;
+            background: rgba(14, 17, 53, 0.8);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(38, 247, 254, 0.3);
+            position: relative;
+            overflow: hidden;
+            animation: containerAppear 0.8s ease-out;
+        }
+        
+        @keyframes containerAppear {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .address-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(to bottom right, rgba(38, 247, 254, 0.1), transparent, rgba(167, 131, 68, 0.1));
+            transform: rotate(30deg);
+            z-index: -1;
+            animation: shine 8s infinite linear;
+        }
+        
+        @keyframes shine {
+            0% {
+                transform: rotate(30deg) translate(-10%, -10%);
+            }
+            100% {
+                transform: rotate(30deg) translate(10%, 10%);
+            }
+        }
+        
+        .address-header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .address-title {
+            font-size: 2.2rem;
+            background: linear-gradient(45deg, #26f7fe, #a78344);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+            text-shadow: 0 5px 15px rgba(38, 247, 254, 0.3);
+            animation: titleGlow 3s infinite alternate;
+        }
+        
+        @keyframes titleGlow {
+            0% {
+                text-shadow: 0 5px 15px rgba(38, 247, 254, 0.3);
+            }
+            100% {
+                text-shadow: 0 5px 25px rgba(38, 247, 254, 0.6), 0 0 30px rgba(167, 131, 68, 0.4);
+            }
+        }
+        
+        .address-subtitle {
+            color: #ccc;
+            font-size: 1.1rem;
+        }
+        /* Formulário de endereço */
+        
+        .address-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .form-section {
+            margin-bottom: 25px;
+        }
+        
+        .form-section-title {
+            font-size: 1.2rem;
+            color: #26f7fe;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid rgba(38, 247, 254, 0.3);
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        .form-section-title i {
+            margin-right: 10px;
+        }
+        
+        .form-section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background: linear-gradient(45deg, #26f7fe, #a78344);
+            border-radius: 2px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #f8f9fa;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 14px 16px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(38, 247, 254, 0.3);
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #26f7fe;
+            box-shadow: 0 0 20px rgba(38, 247, 254, 0.5);
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+        
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .form-hint {
+            font-size: 0.85rem;
+            color: #a78344;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .form-hint i {
+            margin-right: 5px;
+        }
+        /* Botões de ação */
+        
+        .form-actions {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .btn-back {
+            padding: 14px 25px;
+            background: transparent;
+            color: #ccc;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+        
+        .btn-back i {
+            margin-right: 10px;
+        }
+        
+        .btn-back:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #26f7fe;
+            border-color: #26f7fe;
+        }
+        
+        .btn-save {
+            padding: 14px 30px;
+            background: linear-gradient(45deg, #26f7fe, #1a8f9e);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-save i {
+            margin-left: 10px;
+        }
+        
+        .btn-save::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: 0.5s;
+        }
+        
+        .btn-save:hover::before {
+            left: 100%;
+        }
+        
+        .btn-save:hover {
+            background: linear-gradient(45deg, #1a8f9e, #26f7fe);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(38, 247, 254, 0.5);
+        }
+        /* Responsividade */
+        
+        @media (max-width: 850px) {
+            .address-container {
+                margin: 20px;
+                padding: 25px;
+            }
+            .address-form {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .address-title {
+                font-size: 1.8rem;
+            }
+            .form-actions {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .btn-back,
+            .btn-save {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        /* Efeito de confirmação */
+        
+        .success-checkmark {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+            animation: checkmarkScale 0.5s ease-in-out;
+        }
+        
+        .check-icon {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            border-radius: 50%;
+            box-sizing: content-box;
+            border: 4px solid #26f7fe;
+            margin: 0 auto;
+        }
+        
+        .check-icon::before {
+            top: 3px;
+            left: -2px;
+            transform: rotate(45deg);
+            transform-origin: 100% 50%;
+            border-radius: 100px 0 0 100px;
+        }
+        
+        .check-icon::after {
+            top: 0;
+            left: 30px;
+            transform: rotate(-45deg);
+            transform-origin: 0 50%;
+            border-radius: 0 100px 100px 0;
+            animation: rotateCircle 1s ease-in-out;
+        }
+        
+        .check-icon::before,
+        .check-icon::after {
+            content: '';
+            height: 100px;
+            position: absolute;
+            background: #05071e;
+            transform: rotate(-45deg);
+        }
+        
+        .icon-line {
+            height: 5px;
+            background-color: #26f7fe;
+            display: block;
+            border-radius: 2px;
+            position: absolute;
+            z-index: 10;
+        }
+        
+        .icon-line.line-tip {
+            top: 46px;
+            left: 14px;
+            width: 25px;
+            transform: rotate(45deg);
+            animation: icon-line-tip 0.75s;
+        }
+        
+        .icon-line.line-long {
+            top: 38px;
+            right: 8px;
+            width: 47px;
+            transform: rotate(-45deg);
+            animation: icon-line-long 0.75s;
+        }
+        
+        @keyframes rotateCircle {
+            0% {
+                transform: rotate(-45deg);
+            }
+            5% {
+                transform: rotate(-45deg);
+            }
+            12% {
+                transform: rotate(-405deg);
+            }
+            100% {
+                transform: rotate(-405deg);
+            }
+        }
+        
+        @keyframes icon-line-tip {
+            0% {
+                width: 0;
+                left: 1px;
+                top: 19px;
+            }
+            54% {
+                width: 0;
+                left: 1px;
+                top: 19px;
+            }
+            70% {
+                width: 50px;
+                left: -8px;
+                top: 37px;
+            }
+            84% {
+                width: 17px;
+                left: 21px;
+                top: 48px;
+            }
+            100% {
+                width: 25px;
+                left: 14px;
+                top: 45px;
+            }
+        }
+        
+        @keyframes icon-line-long {
+            0% {
+                width: 0;
+                right: 46px;
+                top: 54px;
+            }
+            65% {
+                width: 0;
+                right: 46px;
+                top: 54px;
+            }
+            84% {
+                width: 55px;
+                right: 0px;
+                top: 35px;
+            }
+            100% {
+                width: 47px;
+                right: 8px;
+                top: 38px;
+            }
+        }
+        
+        @keyframes checkmarkScale {
+            0% {
+                transform: scale(0);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Efeitos de fundo -->
+    <div class="holographic-waves">
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+    </div>
+
+    <div class="floating-particles" id="floatingParticles"></div>
+
+    <div class="address-container">
+        <div class="address-header">
+            <h1 class="address-title">Endereço de Entrega</h1>
+            <p class="address-subtitle">Informe onde deseja receber seus produtos</p>
+        </div>
+
+        <form id="addressForm" class="address-form">
+            <div class="form-section">
+                <h3 class="form-section-title"><i class="fas fa-truck"></i> Dados de Entrega</h3>
+
+                <div class="form-group">
+                    <label for="cep">CEP</label>
+                    <input type="text" id="cep" class="form-control" placeholder="00000-000" required>
+                    <div class="form-hint"><i class="fas fa-info-circle"></i> Digite o CEP para autopreencher o endereço</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="street">Logradouro</label>
+                    <input type="text" id="street" class="form-control" placeholder="Rua, Avenida, etc." required>
+                </div>
+
+                <div class="form-group">
+                    <label for="number">Número</label>
+                    <input type="text" id="number" class="form-control" placeholder="123" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="complement">Complemento</label>
+                    <input type="text" id="complement" class="form-control" placeholder="Apartamento, Bloco, etc.">
+                </div>
+
+                <div class="form-group">
+                    <label for="neighborhood">Bairro</label>
+                    <input type="text" id="neighborhood" class="form-control" placeholder="Seu bairro" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="city">Cidade</label>
+                    <input type="text" id="city" class="form-control" placeholder="Sua cidade" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="state">Estado</label>
+                    <select id="state" class="form-control" required>
+                        <option value="">Selecione</option>
+                        <option value="AC">Acre</option>
+                        <option value="AL">Alagoas</option>
+                        <option value="AP">Amapá</option>
+                        <option value="AM">Amazonas</option>
+                        <option value="BA">Bahia</option>
+                        <option value="CE">Ceará</option>
+                        <option value="DF">Distrito Federal</option>
+                        <option value="ES">Espírito Santo</option>
+                        <option value="GO">Goiás</option>
+                        <option value="MA">Maranhão</option>
+                        <option value="MT">Mato Grosso</option>
+                        <option value="MS">Mato Grosso do Sul</option>
+                        <option value="MG">Minas Gerais</option>
+                        <option value="PA">Pará</option>
+                        <option value="PB">Paraíba</option>
+                        <option value="PR">Paraná</option>
+                        <option value="PE">Pernambuco</option>
+                        <option value="PI">Piauí</option>
+                        <option value="RJ">Rio de Janeiro</option>
+                        <option value="RN">Rio Grande do Norte</option>
+                        <option value="RS">Rio Grande do Sul</option>
+                        <option value="RO">Rondônia</option>
+                        <option value="RR">Roraima</option>
+                        <option value="SC">Santa Catarina</option>
+                        <option value="SP">São Paulo</option>
+                        <option value="SE">Sergipe</option>
+                        <option value="TO">Tocantins</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3 class="form-section-title"><i class="fas fa-user"></i> Dados Pessoais</h3>
+
+                <div class="form-group">
+                    <label for="recipient">Destinatário</label>
+                    <input type="text" id="recipient" class="form-control" placeholder="Nome completo" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Telefone</label>
+                    <input type="tel" id="phone" class="form-control" placeholder="(00) 00000-0000" required>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="reference">Ponto de referência</label>
+                    <input type="text" id="reference" class="form-control" placeholder="Próximo ao...">
+                    <div class="form-hint"><i class="fas fa-lightbulb"></i> Ajude o entregador a encontrar seu endereço mais facilmente</div>
+                </div>
+            </div>
+
+            <div class="success-checkmark">
+                <div class="check-icon">
+                    <span class="icon-line line-tip"></span>
+                    <span class="icon-line line-long"></span>
+                    <div class="icon-circle"></div>
+                    <div class="icon-fix"></div>
+                </div>
+                <p>Endereço salvo com sucesso!</p>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn-back" id="backButton">
+                    <i class="fas fa-arrow-left"></i> Voltar
+                </button>
+                <button type="submit" class="btn-save">
+                    Salvar Endereço <i class="fas fa-check"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Criar partículas flutuantes
+        function createParticles() {
+            const container = document.getElementById('floatingParticles');
+            for (let i = 0; i < 25; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+
+                const size = Math.random() * 10 + 3;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100 + 100}%`;
+
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+                particle.style.animationDuration = `${Math.random() * 15 + 15}s`;
+
+                if (Math.random() > 0.7) {
+                    particle.style.background = 'rgba(38, 247, 254, 0.15)';
+                }
+
+                container.appendChild(particle);
+            }
+        }
+
+        // Máscara para CEP
+        function maskCEP(input) {
+            input.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length > 5) {
+                    value = value.substring(0, 5) + '-' + value.substring(5, 8);
+                }
+                e.target.value = value;
+
+                // Buscar endereço automaticamente quando CEP estiver completo
+                if (value.length === 9) {
+                    fetchAddressFromCEP(value);
+                }
+            });
+        }
+
+        // Máscara para telefone
+        function maskPhone(input) {
+            input.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length > 0) {
+                    if (value.length <= 2) {
+                        value = '(' + value;
+                    } else if (value.length <= 6) {
+                        value = '(' + value.substring(0, 2) + ') ' + value.substring(2);
+                    } else if (value.length <= 10) {
+                        value = '(' + value.substring(0, 2) + ') ' + value.substring(2, 6) + '-' + value.substring(6);
+                    } else {
+                        value = '(' + value.substring(0, 2) + ') ' + value.substring(2, 7) + '-' + value.substring(7, 11);
+                    }
+                }
+                e.target.value = value;
+            });
+        }
+
+        // Buscar endereço via API de CEP
+        function fetchAddressFromCEP(cep) {
+            // Limpar caracteres não numéricos
+            cep = cep.replace(/\D/g, '');
+
+            if (cep.length !== 8) return;
+
+            // Mostrar loading
+            const streetField = document.getElementById('street');
+            streetField.disabled = true;
+            streetField.placeholder = "Buscando endereço...";
+
+            fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.erro) {
+                        document.getElementById('street').value = data.logradouro;
+                        document.getElementById('neighborhood').value = data.bairro;
+                        document.getElementById('city').value = data.localidade;
+                        document.getElementById('state').value = data.uf;
+
+                        // Focar no campo número após preencher automaticamente
+                        document.getElementById('number').focus();
+                    } else {
+                        alert('CEP não encontrado. Por favor, preencha o endereço manualmente.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao buscar CEP:', error);
+                    alert('Não foi possível buscar o CEP. Preencha o endereço manualmente.');
+                })
+                .finally(() => {
+                    streetField.disabled = false;
+                    streetField.placeholder = "Rua, Avenida, etc.";
+                });
+        }
+
+        // Validar e enviar formulário
+        function setupForm() {
+            const form = document.getElementById('addressForm');
+            const successCheckmark = document.querySelector('.success-checkmark');
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                // Validação básica
+                const requiredFields = form.querySelectorAll('[required]');
+                let valid = true;
+
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        field.style.borderColor = '#e74c3c';
+                        valid = false;
+
+                        // Remover o estilo de erro quando o usuário começar a digitar
+                        field.addEventListener('input', function() {
+                            if (this.value.trim()) {
+                                this.style.borderColor = '';
+                            }
+                        });
+                    }
+                });
+
+                if (!valid) {
+                    alert('Por favor, preencha todos os campos obrigatórios.');
+                    return;
+                }
+
+                // Simular envio bem-sucedido
+                const submitBtn = form.querySelector('.btn-save');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+                submitBtn.disabled = true;
+
+                // Simular tempo de processamento
+                setTimeout(() => {
+                    // Mostrar checkmark de sucesso
+                    successCheckmark.style.display = 'block';
+
+                    // Esconder o formulário
+                    form.querySelectorAll('.form-section, .form-actions').forEach(el => {
+                        el.style.opacity = '0.3';
+                    });
+
+                    // Desabilitar campos
+                    form.querySelectorAll('input, select').forEach(field => {
+                        field.disabled = true;
+                    });
+
+                    // Atualizar texto do botão
+                    submitBtn.innerHTML = 'Endereço Salvo!';
+
+                    // Redirecionar após um breve delay
+                    setTimeout(() => {
+                        alert('Endereço salvo com sucesso! Voltando para o pagamento...');
+                        window.location.href = 'pagamento.html';
+                    }, 2000);
+                }, 1500);
+            });
+        }
+
+        // Botão voltar
+        function setupBackButton() {
+            document.getElementById('backButton').addEventListener('click', function() {
+                window.history.back();
+            });
+        }
+
+        // Inicializar quando o DOM estiver carregado
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            maskCEP(document.getElementById('cep'));
+            maskPhone(document.getElementById('phone'));
+            setupForm();
+            setupBackButton();
+        });
+    </script>
+</body>
+
+</html>

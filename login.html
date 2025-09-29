@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Vault G&D</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SCRIPTS DO FIREBASE -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="firebase-config.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #05071e 0%, #1a237e 100%);
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .network {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .node {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background-color: rgba(92, 107, 192, 0.6);
+            border-radius: 50%;
+            animation: pulse 4s infinite ease-in-out;
+        }
+        
+        .line {
+            position: absolute;
+            background: linear-gradient(to right, rgba(92, 107, 192, 0.3), rgba(92, 107, 192, 0.1));
+            transform-origin: 0 0;
+            height: 1px;
+        }
+        
+        @keyframes pulse {
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.7;
+            }
+            50% {
+                transform: scale(1.5);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes linePulse {
+            0%,
+            100% {
+                opacity: 0.2;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 420px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(5, 7, 30, 0.3);
+            overflow: hidden;
+            transform: translateY(0);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            z-index: 2;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(5, 7, 30, 0.4);
+        }
+        
+        .header {
+            background: linear-gradient(to right, #05071e, #1a237e);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+            animation: shimmer 8s infinite linear;
+        }
+        
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .form-container {
+            padding: 25px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+        
+        .input-group input:focus {
+            border-color: #1a237e;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.1);
+        }
+        
+        .input-group i {
+            position: absolute;
+            right: 15px;
+            top: 40px;
+            color: #777;
+            transition: color 0.3s;
+        }
+        
+        .input-group input:focus+i {
+            color: #1a237e;
+        }
+        
+        .forgot-password {
+            display: block;
+            text-align: right;
+            margin-bottom: 25px;
+            color: #1a237e;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .forgot-password::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background-color: #3949ab;
+            transition: width 0.3s;
+        }
+        
+        .forgot-password:hover {
+            color: #3949ab;
+        }
+        
+        .forgot-password:hover::after {
+            width: 100%;
+        }
+        
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(to right, #05071e, #1a237e);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn-login::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, #1a237e, #3949ab);
+            transition: left 0.5s;
+            z-index: -1;
+        }
+        
+        .btn-login:hover::before {
+            left: 0;
+        }
+        
+        .btn-login:hover {
+            box-shadow: 0 5px 15px rgba(26, 35, 126, 0.4);
+        }
+        
+        .separator {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 25px 0;
+            color: #777;
+            font-size: 14px;
+        }
+        
+        .separator::before,
+        .separator::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .separator::before {
+            margin-right: 10px;
+        }
+        
+        .separator::after {
+            margin-left: 10px;
+        }
+        
+        .social-login {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+        
+        .btn-social {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-social::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(26, 35, 126, 0.05);
+            transform: scale(0);
+            transition: transform 0.3s;
+            border-radius: 8px;
+        }
+        
+        .btn-social:hover::before {
+            transform: scale(1);
+        }
+        
+        .btn-social i {
+            margin-right: 10px;
+            font-size: 18px;
+            position: relative;
+        }
+        
+        .btn-google {
+            color: #DB4437;
+        }
+        
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 15px;
+            color: #555;
+        }
+        
+        .register-link a {
+            color: #1a237e;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .register-link a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(to right, #1a237e, #3949ab);
+            transition: width 0.3s;
+        }
+        
+        .register-link a:hover {
+            color: #3949ab;
+        }
+        
+        .register-link a:hover::after {
+            width: 100%;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                border-radius: 12px;
+            }
+            .form-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Efeito de rede -->
+    <div class="network" id="network"></div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Bem-vindo de volta!</h1>
+            <p>Faça login para acessar sua conta Vault G&D</p>
+        </div>
+
+        <div class="form-container">
+            <form id="loginForm">
+                <div class="input-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" placeholder="Seu endereço de e-mail" required>
+                    <i class="fas fa-envelope"></i>
+                </div>
+
+                <div class="input-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" placeholder="Sua senha" required>
+                    <i class="fas fa-lock"></i>
+                </div>
+
+                <a href="#" class="forgot-password">Esqueceu sua senha?</a>
+
+                <button type="submit" class="btn-login">Entrar</button>
+            </form>
+
+            <div class="separator">Ou continue com</div>
+
+            <div class="social-login">
+                <button class="btn-social btn-google" id="googleLoginBtn">
+                    <i class="fab fa-google"></i> Continuar com o Google
+                </button>
+            </div>
+
+            <div class="register-link">
+                Não tem uma conta? <a href="cadastro-vault.html" id="registerLink">Cadastre-se agora</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Criar efeito de rede
+        function createNetwork() {
+            const networkContainer = document.getElementById('network');
+            const numberOfNodes = 15;
+            const nodes = [];
+
+            for (let i = 0; i < numberOfNodes; i++) {
+                const node = document.createElement('div');
+                node.classList.add('node');
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                node.style.left = `${left}%`;
+                node.style.top = `${top}%`;
+                node.style.animationDelay = `${Math.random() * 4}s`;
+                networkContainer.appendChild(node);
+                nodes.push({
+                    element: node,
+                    left,
+                    top
+                });
+            }
+
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    const node1 = nodes[i];
+                    const node2 = nodes[j];
+                    const distance = Math.sqrt(Math.pow(node1.left - node2.left, 2) + Math.pow(node1.top - node2.top, 2));
+
+                    if (distance < 30) {
+                        const line = document.createElement('div');
+                        line.classList.add('line');
+                        const angle = Math.atan2(node2.top - node1.top, node2.left - node1.left) * 180 / Math.PI;
+                        const length = distance * 1.2;
+                        line.style.width = `${length}%`;
+                        line.style.left = `${node1.left}%`;
+                        line.style.top = `${node1.top}%`;
+                        line.style.transform = `rotate(${angle}deg)`;
+                        line.style.animationDelay = `${Math.random() * 2}s`;
+                        line.style.animation = `linePulse ${3 + Math.random() * 2}s infinite ease-in-out`;
+                        networkContainer.appendChild(line);
+                    }
+                }
+            }
+        }
+
+        // Login com Google 
+        function signInWithGoogle() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+
+            // Mostrar que está carregando
+            const googleBtn = document.getElementById('googleLoginBtn');
+            const textoOriginal = googleBtn.innerHTML;
+            googleBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Entrando...';
+            googleBtn.disabled = true;
+
+            console.log('🎯 Iniciando login com Google...');
+
+            firebase.auth().signInWithPopup(provider)
+                .then((result) => {
+                    // 🎉 SUCESSO!
+                    console.log('✅ Login bem-sucedido!');
+                    const user = result.user;
+
+                    // Salvar informações do usuário
+                    localStorage.setItem('user', JSON.stringify({
+                        uid: user.uid,
+                        displayName: user.displayName,
+                        email: user.email,
+                        photoURL: user.photoURL
+                    }));
+
+                    // Feedback visual
+                    googleBtn.innerHTML = '<i class="fas fa-check"></i> Sucesso!';
+                    googleBtn.style.background = '#2ecc71';
+                    googleBtn.style.color = 'white';
+
+                    // Ir para página principal
+                    setTimeout(() => {
+                        console.log('🔄 Indo para a página principal...');
+                        window.location.href = 'index.html';
+                    }, 1500);
+                })
+                .catch((error) => {
+                    // 😰 ERRO!
+                    console.error('❌ Erro no login:', error);
+
+                    let errorMessage = 'Erro ao fazer login: ';
+
+                    if (error.code === 'auth/popup-closed-by-user') {
+                        errorMessage = 'Você fechou a janela de login. Tente novamente!';
+                    } else if (error.code === 'auth/cancelled-popup-request') {
+                        errorMessage = 'Login cancelado. Tente novamente!';
+                    } else if (error.code === 'auth/popup-blocked') {
+                        errorMessage = 'A janela de login foi bloqueada. Permita popups para este site!';
+                    } else {
+                        errorMessage += error.message;
+                    }
+
+                    alert(errorMessage);
+                    console.log('🔧 Dica: Verifique se o domínio localhost está autorizado no Firebase');
+
+                    // Voltar botão ao normal
+                    googleBtn.innerHTML = textoOriginal;
+                    googleBtn.disabled = false;
+                    googleBtn.style.background = '';
+                    googleBtn.style.color = '#DB4437';
+                });
+        }
+
+        // Verificar se já está logado
+        function checkAuthState() {
+            firebase.auth().onAuthStateChanged((user) => {
+                if (user) {
+                    // Se já estiver logado, redirecionar direto
+                    console.log('Usuário já logado:', user);
+                    window.location.href = 'index.html';
+                }
+            });
+        }
+
+        // Quando a página carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            createNetwork();
+            checkAuthState();
+
+            // Configurar botão do Google
+            document.getElementById('googleLoginBtn').addEventListener('click', signInWithGoogle);
+
+            // Configurar formulário de email (AGORA FUNCIONAL)
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+
+                // Validar campos
+                if (!email || !password) {
+                    alert('❌ Por favor, preencha todos os campos!');
+                    return;
+                }
+
+                // Mostrar loading no botão
+                const loginBtn = document.querySelector('.btn-login');
+                const originalText = loginBtn.innerHTML;
+                loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Entrando...';
+                loginBtn.disabled = true;
+
+                console.log('🎯 Tentando login manual...', email);
+
+                // Tentar login com email/senha
+                firebase.auth().signInWithEmailAndPassword(email, password)
+                    .then((userCredential) => {
+                        // ✅ Login bem-sucedido
+                        const user = userCredential.user;
+                        console.log('✅ Login manual bem-sucedido:', user);
+
+                        // Salvar dados do usuário
+                        localStorage.setItem('user', JSON.stringify({
+                            uid: user.uid,
+                            displayName: user.displayName || user.email.split('@')[0],
+                            email: user.email,
+                            photoURL: user.photoURL
+                        }));
+
+                        // Feedback visual
+                        loginBtn.innerHTML = '<i class="fas fa-check"></i> Sucesso!';
+                        loginBtn.style.background = '#2ecc71';
+
+                        setTimeout(() => {
+                            alert('🎉 Login realizado com sucesso!');
+                            window.location.href = 'index.html';
+                        }, 1000);
+                    })
+                    .catch((error) => {
+                        // ❌ Erro no login
+                        console.error('❌ Erro no login manual:', error);
+                        console.log('🔍 Código do erro:', error.code);
+
+                        // Voltar botão ao normal
+                        loginBtn.innerHTML = originalText;
+                        loginBtn.disabled = false;
+                        loginBtn.style.background = '';
+
+                        let errorMessage = '';
+
+                        // VERIFICAÇÃO CORRIGIDA DOS ERROS
+                        if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-login-credentials') {
+                            errorMessage = '❌ Email não cadastrado. Você precisa se cadastrar primeiro!\n\nRedirecionando para cadastro em 3 segundos...';
+
+                            setTimeout(() => {
+                                window.location.href = 'cadastro-vault.html';
+                            }, 3000);
+
+                        } else if (error.code === 'auth/wrong-password') {
+                            errorMessage = '❌ Senha incorreta. Tente novamente!';
+                        } else if (error.code === 'auth/invalid-email') {
+                            errorMessage = '❌ Email inválido. Verifique o formato!';
+                        } else if (error.code === 'auth/too-many-requests') {
+                            errorMessage = '🔒 Muitas tentativas. Tente novamente mais tarde ou redefina sua senha.';
+                        } else {
+                            errorMessage = '❌ Erro ao fazer login: ' + error.message;
+                        }
+
+                        alert(errorMessage);
+                    });
+            });
+        });
+
+        // Link de recuperação de senha (AGORA FUNCIONAL)
+        document.querySelector('.forgot-password').addEventListener('click', function(e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+
+            if (!email) {
+                const userEmail = prompt('Digite seu email para recuperar a senha:');
+                if (!userEmail) return;
+
+                firebase.auth().sendPasswordResetEmail(userEmail)
+                    .then(() => {
+                        alert('📧 Email de recuperação enviado! Verifique sua caixa de entrada e spam.');
+                    })
+                    .catch((error) => {
+                        console.error('Erro ao enviar email de recuperação:', error);
+
+                        if (error.code === 'auth/user-not-found') {
+                            alert('❌ Email não encontrado. Verifique se digitou corretamente.');
+                        } else {
+                            alert('❌ Erro ao enviar email: ' + error.message);
+                        }
+                    });
+            } else {
+                // Usar email já digitado no campo
+                firebase.auth().sendPasswordResetEmail(email)
+                    .then(() => {
+                        alert('📧 Email de recuperação enviado! Verifique sua caixa de entrada e spam.');
+                    })
+                    .catch((error) => {
+                        console.error('Erro ao enviar email de recuperação:', error);
+                        alert('❌ Erro ao enviar email: ' + error.message);
+                    });
+            }
+        });
+
+        // Link de recuperação de senha (AGORA FUNCIONAL)
+        document.querySelector('.forgot-password').addEventListener('click', function(e) {
+            e.preventDefault();
+
+            let email = document.getElementById('email').value; // Mudei const para let
+
+            if (!email) {
+                email = prompt('Digite seu email para recuperar a senha:');
+                if (!email) return;
+            }
+
+            firebase.auth().sendPasswordResetEmail(email)
+                .then(() => {
+                    alert('Email de recuperação enviado! Verifique sua caixa de entrada.');
+                })
+                .catch((error) => {
+                    console.error('Erro ao enviar email de recuperação:', error);
+                    alert('Erro ao enviar email: ' + error.message);
+                });
+        });
+    </script>
+</body>
+
+</html>
