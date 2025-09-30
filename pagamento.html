@@ -438,35 +438,8 @@
                 </div>
                 <p class="method-description">Pagamento instantâneo e seguro. Aprovação imediata.</p>
                 <button class="continue-btn" onclick="processarPagamentoPix()">
-                <i class="fas fa-arrow-right"></i> Continuar com Pix
+                    <i class="fas fa-arrow-right"></i> Continuar com Pix
                 </button>
-            </div>
-
-            <div class="method-option" data-method="debit">
-                <div class="method-header">
-                    <div class="method-icon">
-                        <i class="fas fa-credit-card"></i>
-                    </div>
-                    <h3 class="method-name">Cartão de Débito</h3>
-                </div>
-                <p class="method-description">Pagamento rápido e prático com cartão de débito.</p>
-                <button class="continue-btn" onclick="processarPagamentoCartao('debito')">
-                <i class="fas fa-arrow-right"></i> Continuar com Débito
-                </button>
-            </div>
-
-            <div class="method-option" data-method="credit">
-                <div class="method-header">
-                    <div class="method-icon">
-                        <i class="fas fa-credit-card"></i>
-                    </div>
-                    <h3 class="method-name">Cartão de Crédito</h3>
-                </div>
-                <p class="method-description">Pague parcelado com seu cartão de crédito.</p>
-                <button class="continue-btn" onclick="processarPagamentoCartao('credito')">
-                <i class="fas fa-arrow-right"></i> Continuar com Crédito
-                </button>
-            </div>
 
             <button class="back-btn" onclick="window.history.back()">
                 <i class="fas fa-arrow-left"></i> Voltar
@@ -510,30 +483,6 @@
             container.appendChild(p);
         }
 
-        // Alternar métodos de pagamento
-        const methodOptions = document.querySelectorAll('.method-option');
-        methodOptions.forEach(option => {
-            option.addEventListener('click', (e) => {
-                // Não selecionar se clicar no botão de continuar
-                if (e.target.tagName === 'BUTTON') return;
-
-                methodOptions.forEach(o => o.classList.remove('selected'));
-                option.classList.add('selected');
-            });
-        });
-
-        // Selecionar método de pagamento
-        function selectPaymentMethod(method) {
-            switch (method) {
-                case 'pix':
-                    window.location.href = 'pagamento-pix.html';
-                    break;
-                case 'debit':
-                case 'credit':
-                    window.location.href = 'pagamento-cartao.html?type=' + method;
-                    break;
-            }
-        }
         // Preencher resumo do pedido com dados do localStorage (do carrinho)
         const summaryItems = document.getElementById('summaryItems');
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -570,25 +519,27 @@
     </script>
 
     <script>
-        async function processarPagamentoPix() {
-            console.log('🔄 Iniciando processamento PIX...');
-
-            // Verificar se usuário está logado
-            const user = firebase.auth().currentUser;
-            if (!user) {
-                alert('Por favor, faça login primeiro!');
-                window.location.href = 'login.html';
-                return;
-            }
-
-            // Pegar carrinho do localStorage
-            const cart = JSON.parse(localStorage.getItem('cart')) || [];
-            console.log('Carrinho encontrado:', cart);
-
-            if (cart.length === 0) {
-                alert('Seu carrinho está vazio!');
-                return;
-            }
+        function processarPagamentoPix() {
+    console.log('🔄 Redirecionando para página PIX...');
+    
+    // Verificação rápida se o usuário está logado
+    const user = firebase.auth().currentUser;
+    if (!user) {
+        alert('Por favor, faça login primeiro!');
+        window.location.href = 'login.html';
+        return;
+    }
+    
+    // Verificação rápida se o carrinho tem itens
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    if (cart.length === 0) {
+        alert('Seu carrinho está vazio!');
+        return;
+    }
+    
+    // REDIRECIONAMENTO DIRETO para a página PIX
+    a
+}
 
             try {
                 // Mostrar loading
@@ -650,13 +601,7 @@
                 botao.innerHTML = textoOriginal;
                 botao.disabled = false;
             }
-        }
 
-
-        async function processarPagamentoCartao(tipo) {
-            // Redireciona para página de cartão primeiro
-            window.location.href = `pagamento-cartao.html?tipo=${tipo}`;
-        }
     </script>
 
     <script>
