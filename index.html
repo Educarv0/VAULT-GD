@@ -60,6 +60,7 @@
                 </div>
                 <a href="pagamento.html" id="finalizarCompra" class="btn-finalizar">Finalizar Compra</a>
             </div>
+            
         </div>
 
         <!-- Modal de Produto -->
@@ -309,17 +310,33 @@
                         showUserMenu(user);
                     };
                 } else {
-                    // Usuário não está logado
+                    // Usuário não está logado - CORREÇÃO: Garantir redirecionamento
                     console.log('Usuário não logado');
                     loginBtn.innerHTML = '<i class="fas fa-user"></i> Entrar';
                     loginBtn.style.background = 'linear-gradient(45deg, #001f6f, #0030a0)';
+                    
+                    // DEFINIR CLARAMENTE a função de redirecionamento
                     loginBtn.onclick = function() {
-                        window.location.href = 'logi n.html';
+                        window.location.href = 'login.html';
                     };
                 }
             });
         }
 
+        // Garantir que o botão de login funcione mesmo se houver erro no Firebase
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginBtn = document.getElementById('loginBtn');
+            
+            // Configurar fallback caso o Firebase não carregue
+            setTimeout(() => {
+                // Se após 3 segundos não tiver função definida, configurar redirecionamento
+                if (!loginBtn.onclick) {
+                    loginBtn.onclick = function() {
+                        window.location.href = 'login.html';
+                    };
+                }
+            }, 3000);
+        });
         // ==================== MENU DO USUÁRIO ====================
         function showUserMenu(user) {
             // Remover menu existente se houver
